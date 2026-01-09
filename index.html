@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GEELONG EXPRESS COURIER ROUTE OPTIMATISATION (GECRO)</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#eee; margin:0; padding:24px; }
+    .wrap { max-width: 900px; margin: 0 auto; }
+    h1 { font-size: 22px; margin: 0 0 16px 0; }
+    .row { display:flex; gap:12px; margin-bottom:10px; }
+    label { width: 70px; padding-top:10px; }
+    input, select { flex:1; padding:10px; border:1px solid #bbb; border-radius:8px; }
+    .btn { background:#d11; color:white; border:none; padding:12px 16px; border-radius:10px; cursor:pointer; }
+    .btn:disabled { background:#999; cursor:not-allowed; }
+    .box { background:white; padding:14px; border-radius:12px; border:1px solid #ccc; margin-top:16px; }
+    .muted { color:#555; font-size: 14px; }
+    .warning { color:#b00; font-size:14px; }
+    a { word-break: break-all; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>GEELONG EXPRESS COURIER ROUTE OPTIMATISATION (GECRO)</h1>
+    <p>
+      Tired of opening delivery locations one by one from the HUB Mobile app?
+      GECRO shows where all your destinations are on your map for you.
+    </p>
+
+    <div class="box">
+      <div class="muted">
+        Start: <b>MY LOCATION</b> (browser permission). Enter stops below.
+      </div>
+      <div style="height:12px"></div>
+
+      <!-- App selector -->
+      <div class="row">
+        <label for="provider">App</label>
+        <select id="provider">
+          <option value="google" selected>Google Maps (max 10 incl. start)</option>
+          <option value="apple">Apple Maps (max 14 incl. start)</option>
+        </select>
+      </div>
+
+      <!-- Apple warning -->
+      <div id="appleWarning" class="warning" style="display:none; margin-top:6px;">
+        ⚠️ Warning: Apple Maps links are not compatible on PC.
+        Best used on iPhone / Apple Maps / CarPlay.
+      </div>
+
+      <div style="height:12px"></div>
+
+      <!-- Start override -->
+      <div class="row">
+        <label for="startAddr">Start</label>
+        <input id="startAddr" placeholder="(Optional) Enter start address if My Location is wrong" />
+      </div>
+
+      <div class="muted" style="margin-top:-6px;">
+        If Apple starts in the wrong city/state, type your start address above.
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div id="stops"></div>
+
+      <div style="height:14px"></div>
+      <button id="gen" class="btn">GENERATE LINK</button>
+
+      <div id="out" class="box" style="display:none;">
+        <div><b>Route link:</b></div>
+        <div style="height:8px"></div>
+        <a id="link" href="#" target="_blank" rel="noopener"></a>
+        <div style="height:10px"></div>
+        <button id="copy" class="btn" style="background:#444;">COPY LINK</button>
+        <div id="status" class="muted" style="margin-top:10px;"></div>
+      </div>
+
+      <div id="err" class="muted" style="margin-top:12px; color:#b00;"></div>
+    </div>
+  </div>
+
+<script>
+  const stopsDiv = document.getElementById("stops");
+  const providerSel = document.getElementById("provider");
+  const startAddrEl = document.getElementById("startAddr");
+  const appleWarning = document.getElementById("appleWarning");
+
+  const genBtn = document.getElementById("gen");
+  const outBox = document.getElementById("out");
+  const linkA  = document.getElementById("link");
+  const copyBtn = document.getElementById("copy");
+  const status = document.getElementById("status");
+  const err = document.getElementById("err");
+
+  function clean(s) {
+    return (s || "").trim().replace(/\s+/g, " ");
+  }
+
+  function maxStopsForProvider(provider) {
+    return provider === "apple" ? 13 : 9;
+  }
+
+  function renderStopInputs() {
+    const maxStops = maxStopsForProvider(providerSel.value);
+    stopsDiv.innerHTML = "";
+
+    for (let i = 1; i <= maxStops; i++) {
+      const row = document.createElement("div");
+      row.className = "row";
+      row.innerHTML = `
+        <label for="stop${i}">Stop ${i}</label>
+        <input id="stop${i}" placeholder="Enter address (e.g., 195 Rouse St, Port Melbourne)" />
+      `;
+      stopsDiv.appendChild(row);
+    }
+  }
+
+  function gmapsDirUrl(origin, destination, waypoints) {
+    const base = "https://www.google.com/maps/dir/?api=1";
+    const params = new URLSearchParams();
+    if (origin) params.set("origin", origin);
+    if (destination) params.set("destination", destination);
+    if (waypoints.length) params.set("waypoints", waypoints.join("|"));
+    params.set("travelmode", "driving");
+    return `${base}&${params.toString()}`;
+  }
+
+  function appleMapsUrl(origin, stops) {
+    const base = "https://maps.apple.com/?";
+    const params = new URLSearchParams();
+    params.set("dirflg", "d");
+    if (origin) params.set("saddr", origin);
+
+    let daddr = stops[0];
+    for (let i = 1; i < stops.length; i++) {
+      daddr += ` to:${stops[i]}`;
+    }
+    params.set("daddr", daddr);
+
+    return base + params.toString();
+  }
+
+  async function getMyLocationLatLng() {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) reject();
+      navigator.geolocation.getCurrentPosition(
+        pos => resolve(`${pos.coords.latitude},${pos.coords.longitude}`),
+        () => reject(),
+        { enableHighAccuracy: true, timeout: 8000 }
+      );
+    });
+  }
+
+  renderStopInputs();
+
+  providerSel.addEventListener("change", () => {
+    outBox.style.display = "none";
+    err.textContent = "";
+    status.textContent = "";
+
+    appleWarning.style.display =
+      providerSel.value === "apple" ? "block" : "none";
+
+    renderStopInputs();
+  });
+
+  genBtn.addEventListener("click", async () => {
+    err.textContent = "";
+    outBox.style.display = "none";
+
+    const provider = providerSel.value;
+    const maxStops = maxStopsForProvider(provider);
+    const stops = [];
+
+    for (let i = 1; i <= maxStops; i++) {
+      const v = clean(document.getElementById(`stop${i}`)?.value);
+      if (v) stops.push(v);
+    }
+
+    if (!stops.length) {
+      err.textContent = "Please enter at least one stop.";
+      return;
+    }
+
+    let origin = clean(startAddrEl.value);
+    if (!origin) {
+      try {
+        origin = await getMyLocationLatLng();
+      } catch {
+        if (provider === "apple") {
+          err.textContent = "Please enter a Start address for Apple Maps on PC.";
+          return;
+        }
+        origin = "Current Location";
+      }
+    }
+
+    let url = "";
+    if (provider === "apple") {
+      url = appleMapsUrl(origin, stops);
+    } else {
+      url = gmapsDirUrl(origin, stops[stops.length - 1], stops.slice(0, -1));
+    }
+
+    linkA.href = url;
+    linkA.textContent = url;
+    outBox.style.display = "block";
+  });
+
+  copyBtn.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(linkA.href);
+      status.textContent = "Copied to clipboard.";
+    } catch {
+      status.textContent = "Copy failed.";
+    }
+  });
+</script>
+</body>
+</html>
