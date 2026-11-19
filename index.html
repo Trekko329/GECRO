@@ -3,30 +3,49 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#101a2b"><title>GECRO Driver | v0.6 Route Test</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 <style>
 :root{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#eaf1fb;background:#0b1321;color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:linear-gradient(155deg,#111f36,#0b1321 45%);padding:env(safe-area-inset-top) 16px env(safe-area-inset-bottom)}main{max-width:590px;margin:auto;padding:22px 0 45px}h1{font-size:27px;letter-spacing:-.8px;margin:0}.sub{color:#9aabc3;font-size:13px;margin:4px 0 0}.top,.between{display:flex;align-items:center;justify-content:space-between;gap:10px}.pill{font-size:11px;border:1px solid #47657e;color:#a7dcf2;border-radius:40px;padding:7px 10px;white-space:nowrap}.panel{background:#16243a;border:1px solid #304059;border-radius:19px;padding:17px;margin:13px 0;box-shadow:0 7px 28px #0002}h2{margin:0 0 12px;font-size:17px}p{line-height:1.5}.muted,.small{color:#a8b6c9;font-size:13px}.small{font-size:12px}.steps{font-size:13px;color:#b9c8db;line-height:1.7;margin:0;padding-left:22px}.primary,.secondary,.danger,.quiet{font:inherit;font-size:14px;font-weight:700;cursor:pointer;border-radius:12px;padding:12px 13px;min-height:44px}.primary{background:#32b8e2;border:1px solid #32b8e2;color:#081625}.secondary{background:#23334c;border:1px solid #4d6684;color:#f0f6fe}.danger{background:transparent;border:1px solid #7d4554;color:#ffbac2}.quiet{background:transparent;border:1px solid #506c8d;color:#d3eaff}.primary:disabled,.secondary:disabled{opacity:.45;cursor:default}.full{width:100%}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.input{background:#0d1a2d;border:1px solid #55708f;color:#fff;border-radius:12px;padding:12px;font:inherit;font-size:16px;width:100%;min-height:47px;outline-offset:3px}.input:focus{outline:2px solid #3abde6}textarea.input{min-height:75px;resize:vertical}.status{padding:11px 13px;border-radius:12px;background:#203047;color:#c9d8e9;font-size:13px;line-height:1.5;margin-top:12px;white-space:pre-line}.status.ok{background:#123d37;color:#a1f3d3}.status.warn{background:#4a3420;color:#ffe0aa}.status.err{background:#4b2530;color:#ffd0d8}.stop{display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #304059}.stop:last-child{border-bottom:0}.num{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;background:#263c58;color:#acd8fa;font-weight:750;flex:0 0 30px}.address{font-size:14px;line-height:1.4;flex:1;min-width:0;overflow-wrap:anywhere}.remove{background:transparent;border:1px solid #4b607b;border-radius:9px;color:#c6d6e9;width:34px;height:34px;font-size:19px;cursor:pointer}.count{font-size:13px;color:#a7b9d2}.footer{font-size:12px;line-height:1.65;color:#94a9c3;margin-top:17px}a{color:#8adfff}.gap{height:10px}.hidden{display:none!important}.radio-row{display:flex;gap:8px;align-items:center;margin:11px 0;font-size:14px}.radio-row input{accent-color:#32b8e2}.route-item{background:#0d1a2d;border:1px solid #324b66;border-radius:12px;padding:13px;margin-top:9px}.route-item.next{border:2px solid #42cbe7;background:#143348}.route-item.next strong{font-size:17px}.progress{margin:12px 0;padding:13px;background:#102e35;border:1px solid #367d86;border-radius:12px}.progress strong{display:block;font-size:16px}.progress small{display:block;color:#b9d2d5;margin-top:4px}.progress .bar{height:6px;border-radius:6px;background:#34525b;overflow:hidden;margin-top:9px}.progress .bar span{display:block;height:100%;background:#38c8dd}.route-item.done{opacity:.6}.route-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.route-actions button,.route-actions a{flex:1;text-decoration:none;text-align:center}.route-actions a{display:inline-flex;align-items:center;justify-content:center}.label{color:#a8b6c9;font-size:12px;margin:0 0 6px}.verified{color:#8dcbb9;font-size:12px;margin-top:4px;overflow-wrap:anywhere}.review-item{border:1px solid #4a6079;border-radius:12px;padding:12px;margin:9px 0;background:#101e31}.review-item strong{font-size:13px}.review-item a{font-size:12px}.review-item label{display:flex;align-items:flex-start;gap:9px;line-height:1.4;margin-top:8px;font-size:13px}.review-item input{width:20px;height:20px;accent-color:#36c6e8;flex-shrink:0}.review-item .mapmatch{overflow-wrap:anywhere;color:#94d6bd;font-size:12px;margin:6px 0}.notice{background:#342d24;border:1px solid #725d3b;border-radius:12px;padding:11px 13px;color:#f9dfa8;font-size:12px;line-height:1.5}.row-gap{margin-top:10px}button:focus-visible,a:focus-visible{outline:3px solid #f7df75;outline-offset:3px}
+
+/* v0.8 map: optional visualisation, never required for stop-list actions */
+#routeMap{height:335px;width:100%;border-radius:13px;background:#213047;border:1px solid #4a6280;z-index:0}
+.map-head{display:flex;align-items:center;justify-content:space-between;gap:9px;margin:13px 0 8px}
+.map-head h3{margin:0;font-size:15px}
+.map-help{font-size:12px;color:#a8b6c9;margin:7px 0 12px;line-height:1.45}
+.map-pin{display:flex;align-items:center;justify-content:center;background:#2182bb;border:2px solid white;color:white;border-radius:50%;font-weight:800;font-size:14px;box-shadow:0 2px 8px #0007}
+.map-pin.next{background:#02a98e;border:3px solid #fff}
+.map-pin.start{background:#ec9133}
+.map-pin-wrap{background:transparent!important;border:0!important}
+.leaflet-popup-content{color:#132033;font-size:13px;line-height:1.5}
+.leaflet-container{font-family:inherit!important}
 </style>
 </head>
 <body><main>
-<header class="top"><div><h1>GECRO <span style="color:#4dcbea">Driver</span></h1><p class="sub">Route optimisation test · v0.7</p></div><span class="pill">🚚 Open route</span></header>
-<div class="notice"><strong>Prototype testing only.</strong> Public OpenStreetMap geocoding and OSRM demonstration routing services are used. Match confirmation, delivery reopening, Undo, and saved route progress are included for testing. They have usage restrictions and are not approved as a production courier service. Test with public or dummy addresses only, not customer details. Results are estimates without live traffic.</div>
+<header class="top"><div><h1>GECRO <span style="color:#4dcbea">Driver</span></h1><p class="sub">Route optimisation test · v0.8</p></div><span class="pill">🚚 Open route</span></header>
+<div class="notice"><strong>Prototype testing only.</strong> Public OpenStreetMap geocoding and OSRM demonstration routing services are used. Match confirmation, delivery reopening, Undo, saved route progress, and an interactive route map are included for testing. They have usage restrictions and are not approved as a production courier service. Test with public or dummy addresses only, not customer details. Results are estimates without live traffic.</div>
 <section class="panel"><h2>1. Add your stops</h2><p class="muted">In HUB Mobile, copy one address at a time. Come back here and use Paste &amp; Add, or paste into the field below.</p><button class="primary full" id="paste">📋 Paste &amp; Add from clipboard</button><p class="small" style="margin-bottom:6px">Manual paste fallback</p><textarea class="input" id="manual" placeholder="One street address, e.g. 30 Gheringhap St, Geelong VIC" aria-label="Delivery address"></textarea><div class="gap"></div><button class="secondary full" id="add">＋ Add address from text box</button><div class="status" id="status" role="status" aria-live="polite">Ready to add addresses.</div></section>
 <section class="panel"><div class="between"><h2>Your outstanding stops</h2><span class="count" id="count">0 stops</span></div><div id="stops"></div><p class="small" id="reopenHelp">Completed stops have a checked box. Untick one to return it to your outstanding deliveries.</p><div class="grid row-gap"><button class="secondary" id="copy">Copy list</button><button class="danger" id="clear">Clear all</button></div><button class="secondary full row-gap" id="undo" disabled>↶ Undo last change</button></section>
 <section class="panel"><h2>2. Choose where you start</h2><label class="radio-row"><input type="radio" name="startmode" value="gps" checked>📍 My phone's GPS location</label><label class="radio-row"><input type="radio" name="startmode" value="manual">⌨️ Enter starting address instead</label><div id="manualStartWrap" class="hidden"><label class="small" for="manualStart">Starting street address</label><input class="input" id="manualStart" placeholder="e.g. 30 Gheringhap St, Geelong VIC"></div><p class="small">Your GPS is requested only when you press Optimise. Location coordinates aren't saved. Enable location permissions in your browser if asked.</p></section>
-<section class="panel"><h2>3. Calculate your fastest route</h2><button class="primary full" id="optimise">🧭 Optimise remaining stops</button><div class="status" id="routeStatus" role="status" aria-live="polite">Enter at least one address and choose your start location.</div><div id="review" class="hidden"><h2 class="row-gap">Check the address matches</h2><p class="small">The location finder can select the wrong street. Check each match against the address from HUB before using the route. Tap View map when uncertain.</p><div id="reviewItems"></div><button class="primary full row-gap" id="confirm" disabled>✓ Confirm all matches &amp; show route</button></div><div id="result" class="hidden"><div class="between row-gap"><h2>Suggested stop order</h2><span class="count" id="duration"></span></div><p class="small" id="comparison"></p><div id="routeProgress" class="progress"></div><div id="route"></div><button class="secondary full row-gap" id="recalc">↻ Recalculate from my current location</button></div></section>
+<section class="panel"><h2>3. Calculate your fastest route</h2><button class="primary full" id="optimise">🧭 Optimise remaining stops</button><div class="status" id="routeStatus" role="status" aria-live="polite">Enter at least one address and choose your start location.</div><div id="review" class="hidden"><h2 class="row-gap">Check the address matches</h2><p class="small">The location finder can select the wrong street. Check each match against the address from HUB before using the route. Tap View map when uncertain.</p><div id="reviewItems"></div><button class="primary full row-gap" id="confirm" disabled>✓ Confirm all matches &amp; show route</button></div><div id="result" class="hidden"><div class="between row-gap"><h2>Suggested stop order</h2><span class="count" id="duration"></span></div><p class="small" id="comparison"></p><div id="routeProgress" class="progress"></div>
+<div class="map-head"><h3>🗺️ Your delivery route</h3><button type="button" class="secondary" id="fitMap" style="padding:7px 11px;min-height:36px">Fit all stops</button></div>
+<div id="routeMap" role="region" aria-label="Interactive route map with numbered delivery locations"></div>
+<div class="map-help" id="mapStatus" role="status" aria-live="polite">Confirmed stops will appear here.</div>
+<div id="route"></div><button class="secondary full row-gap" id="recalc">↻ Recalculate from my current location</button></div></section>
 <p class="footer">Addresses and completed-state selections are saved only on this browser/device. Street address matching is supplied by © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> through Nominatim, subject to its <a href="https://operations.osmfoundation.org/policies/nominatim/" target="_blank" rel="noopener">usage policy</a>. Routing estimates use a public OSRM demonstration server. Both services receive queries during optimisation. They can be unavailable or return incorrect matches. Check each matched location and follow road signs, road rules and despatch instructions. Do not use the phone while driving.</p>
 </main>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>
 (()=>{'use strict';
 const KEY='gecro-driver-addresses-v03', DONEKEY='gecro-driver-done-v04', GEOKEY='gecro-driver-geocache-v04', ROUTEKEY='gecro-driver-confirmed-route-v06';
 const $=id=>document.getElementById(id);let addresses=[],done=new Set(),routeOrder=[],matched=new Map(),busy=false,geoCache={},undoState=null,pendingRoute=null;
+let leafletMap=null, leafletPins=null, leafletLine=null, mapLoadId=0, mapSignature="", mapBounds=null;
 try{const v=JSON.parse(localStorage.getItem(KEY)||'[]');if(Array.isArray(v))addresses=v.filter(x=>typeof x==='string').slice(0,100)}catch(_){}
 try{const v=JSON.parse(localStorage.getItem(DONEKEY)||'[]');if(Array.isArray(v))done=new Set(v.filter(x=>typeof x==='string'))}catch(_){}
 try{geoCache=JSON.parse(localStorage.getItem(GEOKEY)||'{}')||{}}catch(_){}
 const normal=s=>String(s||'').trim().replace(/\s+/g,' ');const normKey=s=>normal(s).toLocaleLowerCase('en-AU').replace(/[.,]/g,'');const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 function notify(id,message,type=''){const e=$(id);e.textContent=message;e.className='status '+type}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(addresses));localStorage.setItem(DONEKEY,JSON.stringify([...done]));localStorage.setItem(GEOKEY,JSON.stringify(geoCache))}catch(_){notify('status','Browser storage is unavailable. Keep this page open.','warn')}}
-function invalidate(){try{localStorage.removeItem(ROUTEKEY)}catch(_){}pendingRoute=null;$('review').classList.add('hidden');routeOrder=[];matched.clear();$('result').classList.add('hidden');notify('routeStatus','Stop list changed. Optimise again when ready.','warn')}
+function invalidate(){mapLoadId++;mapSignature="";clearRouteMap();try{localStorage.removeItem(ROUTEKEY)}catch(_){}pendingRoute=null;$('review').classList.add('hidden');routeOrder=[];matched.clear();$('result').classList.add('hidden');notify('routeStatus','Stop list changed. Optimise again when ready.','warn')}
 function snapshot(){undoState={addresses:[...addresses],done:[...done],route:pendingRoute?JSON.parse(JSON.stringify(pendingRoute)):null};$('undo').disabled=false}
 $('undo').onclick=()=>{if(!undoState)return;const prior=undoState;addresses=prior.addresses;done=new Set(prior.done);undoState=null;$('undo').disabled=true;save();invalidate();if(prior.route){pendingRoute=prior.route;persistRoute();renderRoute(prior.route.order,prior.route.stops,prior.route.geos,prior.route.matrix);notify('routeStatus','Previous route restored. Recalculate if your position has changed.','ok')}renderStops();notify('status','Last change undone.','ok')};
 function renderStops(){const root=$('stops');root.replaceChildren();$('count').textContent=`${addresses.filter(a=>!done.has(normKey(a))).length} outstanding / ${addresses.length} total`;
@@ -61,17 +80,82 @@ function persistRoute(){try{if(pendingRoute)localStorage.setItem(ROUTEKEY,JSON.s
 function advanceRoute(completedIdx){
   const old=pendingRoute;if(!old)return;
   const remaining=old.order.filter(i=>i!==completedIdx);
-  if(!remaining.length){pendingRoute=null;try{localStorage.removeItem(ROUTEKEY)}catch(_){}$('result').classList.add('hidden');notify('routeStatus','Run complete. All stops marked delivered.','ok');return}
+  if(!remaining.length){mapLoadId++;clearRouteMap();pendingRoute=null;try{localStorage.removeItem(ROUTEKEY)}catch(_){}$('result').classList.add('hidden');notify('routeStatus','Run complete. All stops marked delivered.','ok');return}
   // The last completed stop is the new assumed origin. Preserve the prior sequence without an API call.
   const nodeIds=[completedIdx,...remaining].map(i=>i+1);
   const matrix=nodeIds.map(r=>nodeIds.map(c=>old.matrix[r][c]));
   const stops=remaining.map(i=>old.stops[i]);const geos=remaining.map(i=>old.geos[i]);
   const order=remaining.map((_,i)=>i);
-  pendingRoute={stops,geos,matrix,order};persistRoute();renderRoute(order,stops,geos,matrix);
+  pendingRoute={stops,geos,matrix,order,start:old.geos[completedIdx]};persistRoute();renderRoute(order,stops,geos,matrix);
   notify('routeStatus','Delivery completed. Next stop is ready. Estimated times now start from the completed stop; use Recalculate for fresh GPS and a new fastest route.','ok');
 }
+// Map visualisation uses the same geocoded coordinates as the confirmed stop list.
+function mapNotice(message){$('mapStatus').textContent=message}
+function clearRouteMap(){if(leafletPins)leafletPins.clearLayers();if(leafletLine)leafletLine.clearLayers();mapBounds=null;mapNotice('No active route map. Optimise to view the route.')}
+function ensureMap(){
+ if(leafletMap)return true;
+ if(typeof window.L==='undefined'){mapNotice('Map library could not load. Your numbered stop list and navigation still work.');return false}
+ leafletMap=L.map('routeMap',{scrollWheelZoom:false});
+ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>'}).addTo(leafletMap);
+ leafletPins=L.layerGroup().addTo(leafletMap);leafletLine=L.layerGroup().addTo(leafletMap);
+ leafletMap.setView([-38.15,144.36],11);
+ return true;
+}
+function pinIcon(number,kind){return L.divIcon({className:'map-pin-wrap',html:`<span class="map-pin ${kind}" style="width:33px;height:33px">${number}</span>`,iconSize:[34,34],iconAnchor:[17,17],popupAnchor:[0,-16]})}
+function addPin(lat,lon,label,number,kind){
+ const marker=L.marker([lat,lon],{icon:pinIcon(number,kind)});
+ const pop=document.createElement('div');const strong=document.createElement('strong');strong.textContent=kind==='start'?'Starting point':kind==='next'?'Next stop · '+number:'Stop '+number;
+ const addr=document.createElement('div');addr.textContent=label;pop.append(strong,addr);
+ marker.bindPopup(pop);marker.addTo(leafletPins);return marker;
+}
+async function updateRouteMap(route){
+ const current=++mapLoadId;
+ if(!route||!Array.isArray(route.order)||!route.order.length){clearRouteMap();return}
+ if(!ensureMap())return;
+ // Leave the page layout visible before asking Leaflet to calculate its size.
+ requestAnimationFrame(()=>{if(current===mapLoadId)leafletMap.invalidateSize()});
+ leafletPins.clearLayers();leafletLine.clearLayers();
+ const ordered=route.order.map(i=>({address:route.stops[i],point:route.geos[i]}));
+ const locations=[];
+ if(route.start&&Number.isFinite(Number(route.start.lat))&&Number.isFinite(Number(route.start.lon))){
+  locations.push([Number(route.start.lat),Number(route.start.lon)]);
+  addPin(Number(route.start.lat),Number(route.start.lon),'Current route starting point','S','start');
+ }
+ ordered.forEach((item,i)=>{
+  if(!item.point||!Number.isFinite(Number(item.point.lat))||!Number.isFinite(Number(item.point.lon)))return;
+  const lat=Number(item.point.lat),lon=Number(item.point.lon);
+  locations.push([lat,lon]);addPin(lat,lon,item.address,String(i+1),i===0?'next':'stop')
+ });
+ if(!locations.length){mapNotice('Map coordinates are missing. Reoptimise to regenerate the route.');return}
+ mapBounds=L.latLngBounds(locations);leafletMap.fitBounds(mapBounds.pad(.13),{maxZoom:15,animate:false});
+ if(!route.start){mapNotice('Numbered stop pins restored. Recalculate from GPS to add the start marker and road-route line.');return}
+ mapNotice('Showing numbered stops. Loading the road-route line…');
+ // The matrix estimates sequence cost; OSRM route API supplies the matching actual road geometry.
+ const signature=locations.map(p=>p.join(',')).join('|');
+ if(signature===mapSignature&&window.__gecroLastRoadGeometry){
+  drawRoadGeometry(window.__gecroLastRoadGeometry,current);return;
+ }
+ try{
+  const coords=locations.map(p=>`${p[1]},${p[0]}`).join(';');
+  const url=`https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson&steps=false`;
+  const response=await fetch(url);
+  if(!response.ok)throw Error(`HTTP ${response.status}`);
+  const data=await response.json();
+  if(data.code!=='Ok'||!Array.isArray(data.routes)||!data.routes[0]?.geometry?.coordinates?.length)throw Error('No road geometry returned');
+  if(current!==mapLoadId)return;
+  mapSignature=signature;window.__gecroLastRoadGeometry=data.routes[0].geometry;
+  drawRoadGeometry(data.routes[0].geometry,current);
+ }catch(e){if(current!==mapLoadId)return;mapNotice('Numbered pins are available, but the road-route line could not load. Your stop order and navigation still work.');}
+}
+function drawRoadGeometry(geometry,requestId){
+ if(requestId!==mapLoadId||!leafletLine)return;
+ leafletLine.clearLayers();
+ L.geoJSON(geometry,{style:{color:'#43c9f0',weight:5,opacity:.88}}).addTo(leafletLine);
+ mapNotice('Blue line: estimated driving route. Orange S: start. Green 1: next stop. Times exclude traffic and unloading.');
+}
+$('fitMap').onclick=()=>{if(leafletMap&&mapBounds){leafletMap.invalidateSize();leafletMap.fitBounds(mapBounds.pad(.13),{maxZoom:15})}};
 function renderRoute(order,stops,geo,matrix){const root=$('route');root.replaceChildren();const completedCount=addresses.filter(a=>done.has(normKey(a))).length;const progress=$('routeProgress');progress.replaceChildren();const heading=document.createElement('strong');heading.textContent=`${completedCount} completed · ${stops.length} remaining`;const guidance=document.createElement('small');guidance.textContent=`Next: ${stops[order[0]]}. Route is advisory; update HUB separately.`;const bar=document.createElement('div');bar.className='bar';const fill=document.createElement('span');fill.style.width=`${Math.round(100*completedCount/Math.max(1,addresses.length))}%`;bar.append(fill);progress.append(heading,guidance,bar);let elapsed=0;order.forEach((idx,pos)=>{const a=stops[idx];elapsed+=matrix[pos?order[pos-1]+1:0][idx+1];const card=document.createElement('div');card.className='route-item'+(!pos?' next':'');const heading=document.createElement('div');heading.className='between';const left=document.createElement('strong');left.textContent=pos===0?`NEXT STOP · ${a}`:`Stop ${pos+1} · ${a}`;const time=document.createElement('span');time.className='small';time.textContent=`~${fmtSecs(elapsed)} from start`;heading.append(left,time);const match=document.createElement('div');match.className='verified';match.textContent='Map match: '+geo[idx].label;const actions=document.createElement('div');actions.className='route-actions';const nav=document.createElement('a');nav.className='secondary';nav.href=mapsLink(a);nav.target='_blank';nav.rel='noopener';nav.textContent='↗ Navigate';const completed=document.createElement('button');completed.className='quiet';completed.textContent='✓ Mark completed';completed.onclick=()=>{if(pos!==0&&!confirm('Complete this stop out of the suggested order? The remaining route will be kept in its current sequence.'))return;snapshot();done.add(normKey(a));save();renderStops();advanceRoute(idx)};actions.append(nav,completed);card.append(heading,match,actions);root.append(card)});$('duration').textContent=`~${fmtSecs(routeTotal(matrix,order))} driving${stops.length>12?' (heuristic)':''}`;
-const original=routeTotal(matrix,stops.map((_,i)=>i)),better=original-routeTotal(matrix,order);$('comparison').textContent=better>30?`Approx. ${fmtSecs(better)} quicker than the pasted order. Driving time only; excludes stops, traffic and loading.`:'Driving times are estimated. Check all matched addresses before following the route.';$('result').classList.remove('hidden')}
+const original=routeTotal(matrix,stops.map((_,i)=>i)),better=original-routeTotal(matrix,order);$('comparison').textContent=better>30?`Approx. ${fmtSecs(better)} quicker than the pasted order. Driving time only; excludes stops, traffic and loading.`:'Driving times are estimated. Check all matched addresses before following the route.';$('result').classList.remove('hidden');updateRouteMap(pendingRoute)}
 function renderReview(stops,geos){const box=$('reviewItems');box.replaceChildren();const flags=[];
   stops.forEach((address,i)=>{const item=document.createElement('div');item.className='review-item';
     const original=document.createElement('strong');original.textContent=`${i+1}. HUB: ${address}`;
@@ -85,7 +169,7 @@ $('confirm').onclick=()=>{if(!pendingRoute)return;const {order,stops,geos,matrix
 async function optimise(){if(busy)return;const stops=addresses.filter(a=>!done.has(normKey(a)));if(!stops.length)return notify('routeStatus','Please add at least one outstanding address.','warn');if(stops.length>15)return notify('routeStatus','Prototype limit is 15 outstanding stops. Complete or remove some stops first.','warn');busy=true;$('optimise').disabled=true;$('recalc').disabled=true;$('result').classList.add('hidden');$('review').classList.add('hidden');pendingRoute=null;try{
 notify('routeStatus','Getting your starting location…');const mode=document.querySelector('input[name="startmode"]:checked').value;const start=mode==='gps'?await gps():await (async()=>{const value=normal($('manualStart').value);if(!value)throw Error('Enter a starting street address, or choose GPS.');notify('routeStatus','Looking up starting address…');return geocode(value)})();
 const geos=[];for(let i=0;i<stops.length;i++){notify('routeStatus',`Finding street address ${i+1} of ${stops.length}: ${stops[i]}`);geos.push(await geocode(stops[i]))}
-notify('routeStatus','Checking road travel times and calculating the shortest-time stop order…');const points=[start,...geos];const coords=points.map(p=>`${p.lon},${p.lat}`).join(';');const url=`https://router.project-osrm.org/table/v1/driving/${coords}?annotations=duration`;const res=await fetch(url);if(!res.ok)throw Error(`Routing service unavailable (HTTP ${res.status}). Try again later.`);const data=await res.json();if(data.code!=='Ok'||!Array.isArray(data.durations))throw Error('Could not calculate the driving-time matrix. Check locations and try again.');const matrix=data.durations.map(row=>row.map(v=>v==null?Infinity:v));if(matrix.length!==points.length||matrix.some(row=>!Array.isArray(row)||row.length!==points.length))throw Error('Unexpected routing response.');const order=optimalPath(matrix);if(!Number.isFinite(routeTotal(matrix,order)))throw Error('No drivable route found between all stops.');routeOrder=order;pendingRoute={order,stops,geos,matrix};renderReview(stops,geos);notify('routeStatus',`Calculated an estimated ${stops.length}-stop route. Confirm every map match before viewing the sequence.`,'warn')
+notify('routeStatus','Checking road travel times and calculating the shortest-time stop order…');const points=[start,...geos];const coords=points.map(p=>`${p.lon},${p.lat}`).join(';');const url=`https://router.project-osrm.org/table/v1/driving/${coords}?annotations=duration`;const res=await fetch(url);if(!res.ok)throw Error(`Routing service unavailable (HTTP ${res.status}). Try again later.`);const data=await res.json();if(data.code!=='Ok'||!Array.isArray(data.durations))throw Error('Could not calculate the driving-time matrix. Check locations and try again.');const matrix=data.durations.map(row=>row.map(v=>v==null?Infinity:v));if(matrix.length!==points.length||matrix.some(row=>!Array.isArray(row)||row.length!==points.length))throw Error('Unexpected routing response.');const order=optimalPath(matrix);if(!Number.isFinite(routeTotal(matrix,order)))throw Error('No drivable route found between all stops.');routeOrder=order;pendingRoute={order,stops,geos,matrix,start};renderReview(stops,geos);notify('routeStatus',`Calculated an estimated ${stops.length}-stop route. Confirm every map match before viewing the sequence.`,'warn')
 }catch(e){notify('routeStatus',e.message||'Routing failed. Check internet access and retry.','err')}finally{busy=false;$('optimise').disabled=false;$('recalc').disabled=false;renderStops()}}
 $('optimise').onclick=optimise;$('recalc').onclick=optimise;renderStops();
 try{const restored=JSON.parse(localStorage.getItem(ROUTEKEY)||'null');if(restored&&Array.isArray(restored.stops)&&Array.isArray(restored.geos)&&Array.isArray(restored.order)&&Array.isArray(restored.matrix)&&restored.stops.length>0&&restored.stops.every(a=>addresses.some(v=>normKey(v)===normKey(a))&&!done.has(normKey(a)))&&restored.matrix.length===restored.stops.length+1&&restored.matrix.every(row=>Array.isArray(row)&&row.length===restored.matrix.length)&&restored.order.length===restored.stops.length&&new Set(restored.order).size===restored.stops.length&&restored.order.every(i=>Number.isInteger(i)&&i>=0&&i<restored.stops.length)){
