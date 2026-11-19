@@ -2,7 +2,7 @@
 <html lang="en-AU">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#101a2b"><title>GECRO Driver | v0.11 One-Screen Run</title>
+<meta name="theme-color" content="#101a2b"><title>GECRO Driver | v0.12 Safe Routing</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 <style>
 :root{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#eaf1fb;background:#0b1321;color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:linear-gradient(155deg,#111f36,#0b1321 45%);padding:env(safe-area-inset-top) 16px env(safe-area-inset-bottom)}main{max-width:590px;margin:auto;padding:22px 0 45px}h1{font-size:27px;letter-spacing:-.8px;margin:0}.sub{color:#9aabc3;font-size:13px;margin:4px 0 0}.top,.between{display:flex;align-items:center;justify-content:space-between;gap:10px}.pill{font-size:11px;border:1px solid #47657e;color:#a7dcf2;border-radius:40px;padding:7px 10px;white-space:nowrap}.panel{background:#16243a;border:1px solid #304059;border-radius:19px;padding:17px;margin:13px 0;box-shadow:0 7px 28px #0002}h2{margin:0 0 12px;font-size:17px}p{line-height:1.5}.muted,.small{color:#a8b6c9;font-size:13px}.small{font-size:12px}.steps{font-size:13px;color:#b9c8db;line-height:1.7;margin:0;padding-left:22px}.primary,.secondary,.danger,.quiet{font:inherit;font-size:14px;font-weight:700;cursor:pointer;border-radius:12px;padding:12px 13px;min-height:44px}.primary{background:#32b8e2;border:1px solid #32b8e2;color:#081625}.secondary{background:#23334c;border:1px solid #4d6684;color:#f0f6fe}.danger{background:transparent;border:1px solid #7d4554;color:#ffbac2}.quiet{background:transparent;border:1px solid #506c8d;color:#d3eaff}.primary:disabled,.secondary:disabled{opacity:.45;cursor:default}.full{width:100%}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.input{background:#0d1a2d;border:1px solid #55708f;color:#fff;border-radius:12px;padding:12px;font:inherit;font-size:16px;width:100%;min-height:47px;outline-offset:3px}.input:focus{outline:2px solid #3abde6}textarea.input{min-height:75px;resize:vertical}.status{padding:11px 13px;border-radius:12px;background:#203047;color:#c9d8e9;font-size:13px;line-height:1.5;margin-top:12px;white-space:pre-line}.status.ok{background:#123d37;color:#a1f3d3}.status.warn{background:#4a3420;color:#ffe0aa}.status.err{background:#4b2530;color:#ffd0d8}.stop{display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #304059}.stop:last-child{border-bottom:0}.num{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;background:#263c58;color:#acd8fa;font-weight:750;flex:0 0 30px}.address{font-size:14px;line-height:1.4;flex:1;min-width:0;overflow-wrap:anywhere}.remove{background:transparent;border:1px solid #4b607b;border-radius:9px;color:#c6d6e9;width:34px;height:34px;font-size:19px;cursor:pointer}.count{font-size:13px;color:#a7b9d2}.footer{font-size:12px;line-height:1.65;color:#94a9c3;margin-top:17px}a{color:#8adfff}.gap{height:10px}.hidden{display:none!important}.radio-row{display:flex;gap:8px;align-items:center;margin:11px 0;font-size:14px}.radio-row input{accent-color:#32b8e2}.route-item{background:#0d1a2d;border:1px solid #324b66;border-radius:12px;padding:13px;margin-top:9px}.route-item.next{border:2px solid #42cbe7;background:#143348}.route-item.next strong{font-size:17px}.progress{margin:12px 0;padding:13px;background:#102e35;border:1px solid #367d86;border-radius:12px}.progress strong{display:block;font-size:16px}.progress small{display:block;color:#b9d2d5;margin-top:4px}.progress .bar{height:6px;border-radius:6px;background:#34525b;overflow:hidden;margin-top:9px}.progress .bar span{display:block;height:100%;background:#38c8dd}.route-item.done{opacity:.6}.route-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.route-actions button,.route-actions a{flex:1;text-decoration:none;text-align:center}.route-actions a{display:inline-flex;align-items:center;justify-content:center}.label{color:#a8b6c9;font-size:12px;margin:0 0 6px}.verified{color:#8dcbb9;font-size:12px;margin-top:4px;overflow-wrap:anywhere}.review-item{border:1px solid #4a6079;border-radius:12px;padding:12px;margin:9px 0;background:#101e31}.review-item strong{font-size:13px}.review-item a{font-size:12px}.review-item label{display:flex;align-items:flex-start;gap:9px;line-height:1.4;margin-top:8px;font-size:13px}.review-item input{width:20px;height:20px;accent-color:#36c6e8;flex-shrink:0}.review-item .mapmatch{overflow-wrap:anywhere;color:#94d6bd;font-size:12px;margin:6px 0}.notice{background:#342d24;border:1px solid #725d3b;border-radius:12px;padding:11px 13px;color:#f9dfa8;font-size:12px;line-height:1.5}.row-gap{margin-top:10px}button:focus-visible,a:focus-visible{outline:3px solid #f7df75;outline-offset:3px}
@@ -39,6 +39,10 @@
 .route-item:focus-within{outline:1px solid #4dcbea}
 @media(max-width:390px){.map-head{align-items:flex-start;flex-direction:column}.map-controls{justify-content:flex-start}}
 
+/* v0.12: distinguish unplanned addresses from confirmed routing */
+.unplanned-badge{display:inline-flex;align-items:center;gap:4px;border:1px solid #d1a64c;background:#513c20;color:#ffe6a8;padding:4px 7px;border-radius:7px;font-size:11px;font-weight:700;margin-top:6px}
+.route-warning{padding:10px 11px;background:#46361d;color:#ffdfa1;border:1px solid #9b783a;border-radius:10px;margin:9px 0;font-size:12px;line-height:1.5}
+#review{padding:12px;border:1px solid #417a95;border-radius:12px;background:#112b3d;margin-top:12px}
 /* v0.11: one-screen run dashboard and mobile-first drag-and-drop */
 main{max-width:660px;padding-top:15px}
 .panel.run-panel{margin-top:10px;padding:14px}
@@ -57,7 +61,7 @@ main{max-width:660px;padding-top:15px}
 .stop-row{display:flex;align-items:flex-start;gap:8px;background:#0e1e31;border:1px solid #3b526e;border-radius:12px;padding:9px;position:relative;min-width:0}
 .stop-row.next{background:#13374b;border-color:#3ac1df;box-shadow:inset 3px 0 0 #3ac1df}
 .stop-row.priority-stop{border-left:3px solid #deb04c}
-.stop-row.dragging{opacity:.85;z-index:20;pointer-events:none;box-shadow:0 12px 30px #0009;border-color:#4ed2ee;background:#233d56;transition:none}
+.stop-row.dragging{opacity:.85;z-index:20;box-shadow:0 12px 30px #0009;border-color:#4ed2ee;background:#233d56;transition:none}
 .stop-row.drag-before::before,.stop-row.drag-after::after{content:"";position:absolute;left:5px;right:5px;height:4px;background:#50d9ed;border-radius:4px;z-index:25}
 .stop-row.drag-before::before{top:-7px}.stop-row.drag-after::after{bottom:-7px}
 .stop-row .num{width:29px;height:29px;flex:0 0 29px}
@@ -95,7 +99,7 @@ main{max-width:660px;padding-top:15px}
 </style>
 </head>
 <body><main>
-<header class="top"><div><h1>GECRO <span style="color:#4dcbea">Driver</span></h1><p class="sub">One-screen delivery run · v0.11</p></div><span class="pill">🚚 Open route</span></header>
+<header class="top"><div><h1>GECRO <span style="color:#4dcbea">Driver</span></h1><p class="sub">One-screen delivery run · v0.12</p></div><span class="pill">🚚 Open route</span></header>
 <details class="notice compact"><summary><strong>Prototype testing only · public addresses</strong></summary>Public OpenStreetMap lookup and OSRM demo routing services are not suitable for commercial fleet deployment. Use dummy or publicly listed addresses only. Check all map matches. Estimates exclude live traffic and unloading.</details>
 <section class="panel run-panel" id="runPanel">
   <div class="between run-heading"><h2>My delivery run</h2><span class="count" id="count">0 stops</span></div>
@@ -106,10 +110,11 @@ main{max-width:660px;padding-top:15px}
   <div class="status hidden" id="status" role="status" aria-live="polite">Ready to add addresses.</div>
   <button class="primary full row-gap" id="optimise">🧭 Optimise remaining stops</button>
   <div class="status" id="routeStatus" role="status" aria-live="polite">Add addresses, then optimise from your GPS position.</div>
-  <div id="review" class="hidden"><h2 class="row-gap">Check the address matches</h2><p class="small">Confirm each location against the original HUB address before using the route.</p><div id="reviewItems"></div><button class="primary full row-gap" id="confirm" disabled>✓ Confirm all matches &amp; show route</button></div>
+  <div class="route-warning hidden" id="unplannedWarning" role="status" aria-live="polite"></div>
+  <div id="review" class="hidden"><h2 class="row-gap">Check the address matches</h2><p class="small">This is a proposed route only. Your previous confirmed route stays active until every new location is checked and you tap Confirm.</p><div id="reviewItems"></div><button class="primary full row-gap" id="confirm" disabled>✓ Confirm all matches &amp; show route</button></div>
   <div class="between"><div class="stop-list-title">Outstanding stops <span id="stopOrderLabel" class="small">· Added order</span></div></div>
   <div id="stops" aria-label="Outstanding delivery stops, drag the handles to reorder"></div>
-  <p class="small" id="reopenHelp">Drag the ⠿ handle to reorder stops. Use ★ for priority. Tick a completed delivery, or expand Completed to untick it.</p>
+  <p class="small" id="reopenHelp">Drag ⠿ to reorder, ★ for priority, tick a delivered stop, or expand Completed to reopen it. Newly added jobs remain clearly marked until reoptimised.</p>
   <details id="completedSection" class="hidden"><summary id="completedSummary">Completed (0) · tap to reopen</summary><div id="completedStops"></div></details>
   <div id="result" class="hidden">
     <p class="small" id="comparison"></p>
@@ -129,6 +134,7 @@ main{max-width:660px;padding-top:15px}
 const KEY='gecro-driver-addresses-v03', DONEKEY='gecro-driver-done-v04', GEOKEY='gecro-driver-geocache-v04', ROUTEKEY='gecro-driver-confirmed-route-v06', PRIORITYKEY='gecro-driver-priorities-v10';
 const $=id=>document.getElementById(id);let addresses=[],done=new Set(),priorities=new Set(),routeOrder=[],matched=new Map(),busy=false,geoCache={},undoState=null,pendingRoute=null;
 let leafletMap=null, leafletPins=null, leafletLine=null, mapLoadId=0, mapSignature="", mapBounds=null, mapStopMarkers=[];
+let candidateRoute=null; // Unconfirmed calculations never become the active route.
 const MAPKEY='gecro-driver-map-visible-v09';let mapVisible=false;
 try{mapVisible=localStorage.getItem(MAPKEY)==='shown'}catch(_){}
 try{const v=JSON.parse(localStorage.getItem(KEY)||'[]');if(Array.isArray(v))addresses=v.filter(x=>typeof x==='string').slice(0,100)}catch(_){}
@@ -138,9 +144,19 @@ try{geoCache=JSON.parse(localStorage.getItem(GEOKEY)||'{}')||{}}catch(_){}
 const normal=s=>String(s||'').trim().replace(/\s+/g,' ');const normKey=s=>normal(s).toLocaleLowerCase('en-AU').replace(/[.,]/g,'');const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 function notify(id,message,type=''){const e=$(id);e.textContent=message;e.className='status '+type;if(id==='status')e.classList.remove('hidden')}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(addresses));localStorage.setItem(DONEKEY,JSON.stringify([...done]));localStorage.setItem(GEOKEY,JSON.stringify(geoCache));localStorage.setItem(PRIORITYKEY,JSON.stringify([...priorities]))}catch(_){notify('status','Browser storage is unavailable. Keep this page open.','warn')}}
-function invalidate(){mapLoadId++;mapSignature="";clearRouteMap();try{localStorage.removeItem(ROUTEKEY)}catch(_){}pendingRoute=null;$('review').classList.add('hidden');routeOrder=[];matched.clear();$('result').classList.add('hidden');$('routeProgress').classList.add('hidden');$('routeMetrics').classList.add('hidden');$('optimise').textContent='🧭 Optimise remaining stops';notify('routeStatus','Stop list changed. Optimise again when ready.','warn')}
-function snapshot(){undoState={addresses:[...addresses],done:[...done],priorities:[...priorities],route:pendingRoute?JSON.parse(JSON.stringify(pendingRoute)):null};$('undo').disabled=false}
-$('undo').onclick=()=>{if(!undoState)return;const prior=undoState;addresses=prior.addresses;done=new Set(prior.done);priorities=new Set(prior.priorities||[]);undoState=null;$('undo').disabled=true;save();invalidate();if(prior.route){pendingRoute=prior.route;persistRoute();renderRoute(prior.route.order,prior.route.stops,prior.route.geos,prior.route.matrix);notify('routeStatus','Previous route restored. Recalculate if your position has changed.','ok')}renderStops();notify('status','Last change undone.','ok')};
+function invalidate(){$('unplannedWarning').classList.add('hidden');candidateRoute=null;mapLoadId++;mapSignature="";clearRouteMap();try{localStorage.removeItem(ROUTEKEY)}catch(_){}pendingRoute=null;$('review').classList.add('hidden');routeOrder=[];matched.clear();$('result').classList.add('hidden');$('routeProgress').classList.add('hidden');$('routeMetrics').classList.add('hidden');$('optimise').textContent='🧭 Optimise remaining stops';notify('routeStatus','Stop list changed. Optimise again when ready.','warn')}
+function snapshot(){if(candidateRoute){candidateRoute=null;$('review').classList.add('hidden');notify('routeStatus','The stop list changed, so the unconfirmed route proposal was discarded. Reoptimise to include your latest changes.','warn')}undoState={addresses:[...addresses],done:[...done],priorities:[...priorities],route:pendingRoute?JSON.parse(JSON.stringify(pendingRoute)):null};$('undo').disabled=false}
+$('undo').onclick=()=>{if(busy){notify('status','Please finish route calculation before undoing.','warn');return}if(!undoState)return;const prior=undoState;addresses=prior.addresses;done=new Set(prior.done);priorities=new Set(prior.priorities||[]);undoState=null;$('undo').disabled=true;save();invalidate();if(prior.route){pendingRoute=prior.route;persistRoute();renderRoute(prior.route.order,prior.route.stops,prior.route.geos,prior.route.matrix);notify('routeStatus','Previous route restored. Recalculate if your position has changed.','ok')}renderStops();notify('status','Last change undone.','ok')};
+function unplannedStops(route=pendingRoute){
+ if(!route)return [];
+ const routedKeys=new Set(route.stops.map(normKey));
+ return addresses.filter(a=>!done.has(normKey(a))&&!routedKeys.has(normKey(a)));
+}
+function refreshUnplannedWarning(){
+ const extra=unplannedStops();const box=$('unplannedWarning');
+ box.classList.toggle('hidden',!extra.length);
+ if(extra.length)box.textContent=`⚠ ${extra.length} new/unrouted stop${extra.length===1?'':'s'} not included in the map or driving-time estimate. Reoptimise and confirm the new address matches before relying on the full run.`;
+}
 function listedOutstanding(){
  const all=addresses.filter(a=>!done.has(normKey(a)));
  if(!pendingRoute||!Array.isArray(pendingRoute.order))return all;
@@ -151,14 +167,14 @@ function renderStops(){
  const root=$('stops'),completedRoot=$('completedStops');root.replaceChildren();completedRoot.replaceChildren();
  const outstanding=listedOutstanding(),completed=addresses.filter(a=>done.has(normKey(a)));
  $('count').textContent=`${outstanding.length} left / ${addresses.length} total`;
- $('stopOrderLabel').textContent=pendingRoute?'· '+(pendingRoute.mode==='manual'?'Manual order':pendingRoute.mode==='priority-adjusted'?'Priority order':'Optimised order'):'· Added order';
+ $('stopOrderLabel').textContent=pendingRoute?'· '+(pendingRoute.mode==='manual'?'Manual order':pendingRoute.mode==='priority-adjusted'?'Priority order':'Optimised order')+(unplannedStops().length?' + '+unplannedStops().length+' unrouted':''):'· Added order';
  $('completedSection').classList.toggle('hidden',!completed.length);
  $('completedSummary').textContent=`Completed (${completed.length}) · tap to reopen`;
  if(!outstanding.length){const p=document.createElement('p');p.className='muted';p.textContent=completed.length?'All stops completed. Well done!':'No addresses added yet. Copy one from HUB and tap Paste & Add.';root.append(p)}
  function oneRow(a,pos,isDone){
   const key=normKey(a),idx=addresses.findIndex(v=>normKey(v)===key),routeIdx=pendingRoute?.stops.findIndex(v=>normKey(v)===key)??-1;
   const row=document.createElement('div');row.className='stop-row'+(!isDone&&pos===0&&pendingRoute?' next':'')+(!isDone&&priorities.has(key)?' priority-stop':'');row.dataset.key=key;
-  if(!isDone){const handle=document.createElement('button');handle.type='button';handle.className='drag-handle';handle.textContent='⠿';handle.title='Drag to reorder; keyboard Arrow Up or Arrow Down';handle.disabled=busy;handle.setAttribute('aria-label',`Reorder ${a}: drag, or use arrow keys`);handle.addEventListener('pointerdown',e=>startDrag(e,row,a,handle));handle.addEventListener('keydown',e=>{if(e.key==='ArrowUp'||e.key==='ArrowDown'){e.preventDefault();reorderAddress(a,Math.max(0,Math.min(listedOutstanding().length-1,listedOutstanding().findIndex(v=>normKey(v)===key)+(e.key==='ArrowUp'?-1:1))))}});row.append(handle)}
+  if(!isDone){const handle=document.createElement('button');handle.type='button';handle.className='drag-handle';handle.textContent='⠿';handle.title='Drag to reorder; keyboard Arrow Up or Arrow Down';handle.disabled=busy||(!!pendingRoute&&routeIdx<0);handle.setAttribute('aria-label',pendingRoute&&routeIdx<0?`Optimise this new stop before reordering: ${a}`:`Reorder ${a}: drag, or use arrow keys`);handle.addEventListener('pointerdown',e=>startDrag(e,row,a,handle));handle.addEventListener('keydown',e=>{if(e.key==='ArrowUp'||e.key==='ArrowDown'){e.preventDefault();reorderAddress(a,Math.max(0,Math.min(listedOutstanding().length-1,listedOutstanding().findIndex(v=>normKey(v)===key)+(e.key==='ArrowUp'?-1:1))))}});row.append(handle)}
   const number=document.createElement('span');number.className='num';number.textContent=isDone?'✓':pos+1;row.append(number);
   const body=document.createElement('div');body.className='stop-row-body';const top=document.createElement('div');top.className='stop-row-top';
   const txt=document.createElement('div');txt.className='address';txt.textContent=a;top.append(txt);
@@ -166,11 +182,12 @@ function renderStops(){
   if(!isDone&&pendingRoute&&routeIdx>=0){
    const routePos=pendingRoute.order.indexOf(routeIdx);const secs=pendingRoute.order.slice(0,routePos+1).reduce((acc,id,i)=>acc+pendingRoute.matrix[i?pendingRoute.order[i-1]+1:0][id+1],0);
    const detail=document.createElement('div');detail.className='stop-detail';detail.textContent=(routePos===0?'NEXT DELIVERY · ':'')+`~${fmtSecs(secs)} from route start`+(priorities.has(key)?' · ★ Priority':'');body.append(detail);
-  }else if(!isDone&&priorities.has(key)){const detail=document.createElement('div');detail.className='priority-label';detail.textContent='★ Priority';body.append(detail)}
+  }else if(!isDone){const detail=document.createElement('div');detail.className=pendingRoute?'unplanned-badge':'stop-detail';detail.textContent=pendingRoute?'⚠ Not yet routed'+(priorities.has(key)?' · ★ Priority':''):(priorities.has(key)?'★ Priority':'Awaiting optimisation');body.append(detail)}
   const actions=document.createElement('div');actions.className='stop-actions';
   if(!isDone){
    const priority=document.createElement('button');priority.type='button';priority.className='priority-btn'+(priorities.has(key)?' active':'');priority.textContent=priorities.has(key)?'★ Priority':'☆ Priority';priority.disabled=busy;priority.setAttribute('aria-label',(priorities.has(key)?'Remove priority from ':'Prioritise ')+a);priority.onclick=()=>togglePriority(a);actions.append(priority);
    if(pendingRoute&&routeIdx>=0){const focus=document.createElement('button');focus.type='button';focus.className='secondary';focus.textContent='◎ Map';focus.disabled=busy;focus.setAttribute('aria-label',`Show stop ${pos+1} on map: ${a}`);focus.onclick=()=>mapFocusStop(pos);const nav=document.createElement('a');nav.className='primary';nav.href=mapsLink(a);nav.target='_blank';nav.rel='noopener';nav.textContent=pos===0?'↗ Navigate next':'↗ Navigate';actions.append(focus,nav)}
+   if(pendingRoute&&routeIdx<0){const nav=document.createElement('a');nav.className='secondary';nav.href=mapsLink(a);nav.target='_blank';nav.rel='noopener';nav.textContent='↗ Open in Maps';nav.title='This address is not part of the confirmed route';actions.append(nav)}
    const edit=document.createElement('button');edit.type='button';edit.className='remove';edit.textContent='✎';edit.title='Edit address';edit.disabled=busy;edit.setAttribute('aria-label','Edit '+a);edit.onclick=()=>{const updated=prompt('Correct this address:',a);if(updated===null)return;const value=normal(updated);if(!value||value.length>350){notify('status','Enter one valid address.','warn');return}if(addresses.some((v,j)=>j!==idx&&normKey(v)===normKey(value))){notify('status','That address is already listed.','warn');return}snapshot();if(priorities.delete(key))priorities.add(normKey(value));addresses[idx]=value;done.delete(key);save();invalidate();renderStops()};actions.append(edit);
    const remove=document.createElement('button');remove.type='button';remove.className='remove';remove.textContent='×';remove.title='Remove address';remove.disabled=busy;remove.setAttribute('aria-label','Remove '+a);remove.onclick=()=>{snapshot();addresses.splice(idx,1);done.delete(key);priorities.delete(key);save();invalidate();renderStops()};actions.append(remove);
   }
@@ -190,7 +207,7 @@ function setStopCompleted(a,markDone){
   notify('status',`Reopened: ${a}`,'ok');
  }else{
   snapshot();done.add(key);save();const idx=pendingRoute?.stops.findIndex(v=>normKey(v)===key)??-1;
-  if(idx>=0)advanceRoute(idx);else invalidate();notify('status',`Completed: ${a}`,'ok');
+  if(idx>=0)advanceRoute(idx);else if(pendingRoute)renderRoute(pendingRoute.order,pendingRoute.stops,pendingRoute.geos,pendingRoute.matrix);else invalidate();notify('status',`Completed: ${a}`,'ok');
  }
  renderStops();
 }
@@ -199,11 +216,12 @@ function reorderAddress(address,to){
  if(busy)return;
  const current=listedOutstanding(),from=current.findIndex(a=>normKey(a)===normKey(address));
  if(from<0||to<0||to>=current.length||from===to)return;
+ if(pendingRoute&&unplannedStops().length&&(from>=pendingRoute.stops.length||to>=pendingRoute.stops.length)){notify('routeStatus','New stops must be optimised and confirmed before they can be inserted into the confirmed sequence. The existing route is unchanged.','warn');return}
  snapshot();const changed=[...current],moved=changed.splice(from,1)[0];changed.splice(to,0,moved);
  addresses=[...changed,...addresses.filter(a=>done.has(normKey(a)))];save();
  if(pendingRoute){
   const order=changed.map(a=>pendingRoute.stops.findIndex(v=>normKey(v)===normKey(a)));
-  if(order.some(i=>i<0)){invalidate();notify('routeStatus','Stop list changed. Optimise again to update estimates.','warn');renderStops();return}
+  if(order.some(i=>i<0)){const routedOrder=changed.map(a=>pendingRoute.stops.findIndex(v=>normKey(v)===normKey(a))).filter(i=>i>=0);pendingRoute={...pendingRoute,order:routedOrder,mode:'manual'};persistRoute();renderRoute(pendingRoute.order,pendingRoute.stops,pendingRoute.geos,pendingRoute.matrix);notify('routeStatus','Unrouted job moved manually. The map and estimates still exclude that job until you reoptimise.','warn');renderStops();return}
   pendingRoute={...pendingRoute,order,mode:'manual'};
   applyLocalRouteChange('Stop order updated. Driving time and the map reflect the manual route. Optimise again to restore the fastest priority-aware route.');
  }else{renderStops();notify('status','Stop order changed. Press Optimise when ready.','ok')}
@@ -221,36 +239,37 @@ function dragTarget(y){
 function finishDrag(commit){
  const drag=activeDrag;if(!drag)return;activeDrag=null;
  if(drag.raf)cancelAnimationFrame(drag.raf);
- drag.handle.removeEventListener('pointermove',drag.move);
- drag.handle.removeEventListener('pointerup',drag.up);
- drag.handle.removeEventListener('pointercancel',drag.cancel);
+ window.removeEventListener('pointermove',drag.move,true);
+ window.removeEventListener('pointerup',drag.up,true);
+ window.removeEventListener('pointercancel',drag.cancel,true);
  drag.row.style.transform='';drag.row.classList.remove('dragging');
  $('stops').querySelectorAll('.drag-before,.drag-after').forEach(el=>el.classList.remove('drag-before','drag-after'));
- try{if(drag.handle.hasPointerCapture(drag.id))drag.handle.releasePointerCapture(drag.id)}catch(_){}
+ // Global pointer listeners keep the drag reliable while rows scroll under a finger.
  if(commit&&drag.moved)reorderAddress(drag.address,drag.target);
 }
 function startDrag(e,row,address,handle){
  if(busy||activeDrag||(e.pointerType==='mouse'&&e.button!==0))return;
  e.preventDefault();const startY=e.clientY;
  const drag={row,address,handle,id:e.pointerId,startY,y:startY,target:listedOutstanding().findIndex(a=>normKey(a)===normKey(address)),moved:false,raf:0};activeDrag=drag;
- handle.setPointerCapture(e.pointerId);
+ // Listen at window level: transformed or scrolling rows must not lose the drag.
  drag.move=ev=>{if(ev.pointerId!==drag.id)return;drag.y=ev.clientY;if(Math.abs(drag.y-startY)>=6)drag.moved=true;if(drag.moved){row.classList.add('dragging');row.style.transform=`translateY(${drag.y-startY}px)`;dragTarget(drag.y)}};
  drag.up=ev=>{if(ev.pointerId===drag.id)finishDrag(true)};
  drag.cancel=ev=>{if(ev.pointerId===drag.id)finishDrag(false)};
- handle.addEventListener('pointermove',drag.move);handle.addEventListener('pointerup',drag.up);handle.addEventListener('pointercancel',drag.cancel);
+ window.addEventListener('pointermove',drag.move,true);window.addEventListener('pointerup',drag.up,true);window.addEventListener('pointercancel',drag.cancel,true);
  const autoScroll=()=>{if(activeDrag!==drag)return;
   if(drag.moved){const band=80,step=12;let velocity=drag.y<band?-step:drag.y>window.innerHeight-band?step:0;
    if(velocity){window.scrollBy(0,velocity);dragTarget(drag.y)}}
   drag.raf=requestAnimationFrame(autoScroll)};
  drag.raf=requestAnimationFrame(autoScroll);
 }
-function addAddress(raw){const value=normal(raw);if(!value){notify('status','Copy or paste one address first.','warn');return}if(value.length>350||value.includes('\n')){notify('status','Please add only one street address at a time.','warn');return}if(addresses.some(a=>normKey(a)===normKey(value))){notify('status','Already listed, so no duplicate was added.','warn');return}snapshot();addresses.push(value);save();invalidate();renderStops();$('manual').value='';notify('status',`Address added: ${value}`,'ok')}
+function addAddress(raw){if(busy){notify('status','Finish or cancel the current route calculation before adding a stop.','warn');return}const value=normal(raw);if(!value){notify('status','Copy or paste one address first.','warn');return}if(value.length>350||value.includes('\n')){notify('status','Please add only one street address at a time.','warn');return}if(addresses.some(a=>normKey(a)===normKey(value))){notify('status','Already listed, so no duplicate was added.','warn');return}snapshot();addresses.push(value);save();if(pendingRoute){renderRoute(pendingRoute.order,pendingRoute.stops,pendingRoute.geos,pendingRoute.matrix);persistRoute();notify('routeStatus','New address added. The previous confirmed route remains available, but it does not include the new job. Reoptimise when safe.','warn')}else{invalidate()}renderStops();$('manual').value='';notify('status',`Address added: ${value}`,'ok')}
 $('toggleEntry').onclick=()=>{const open=$('entryArea').classList.toggle('hidden')===false;$('toggleEntry').setAttribute('aria-expanded',String(open));$('toggleEntry').textContent=open?'✕ Close manual entry':'⌨ Type an address';if(open)$('manual').focus()};
 $('paste').onclick=async()=>{if(!navigator.clipboard?.readText){notify('status','Clipboard button unavailable. Long-press the field and Paste, then tap Add.','warn');$('manual').focus();return}try{addAddress(await navigator.clipboard.readText())}catch(_){notify('status','Clipboard permission denied. Long-press the field and Paste, then tap Add.','warn');$('manual').focus()}};
 $('add').onclick=()=>addAddress($('manual').value);
-$('clear').onclick=()=>{if(addresses.length&&confirm('Clear all stops and completed markers?')){snapshot();addresses=[];done.clear();priorities.clear();save();invalidate();renderStops();notify('status','All addresses cleared.','ok')}};
+$('clear').onclick=()=>{if(busy){notify('status','Please finish route calculation before clearing.','warn');return}if(addresses.length&&confirm('Clear all stops and completed markers?')){snapshot();addresses=[];done.clear();priorities.clear();save();invalidate();renderStops();notify('status','All addresses cleared.','ok')}};
 $('copy').onclick=async()=>{if(!addresses.length)return notify('status','Nothing to copy.','warn');const txt=addresses.join('\n');try{await navigator.clipboard.writeText(txt);notify('status','Addresses copied.','ok')}catch(_){$('manual').value=txt;$('manual').focus();$('manual').select();notify('status','Copy the selected addresses from the text field.','warn')}};
-document.querySelectorAll('input[name="startmode"]').forEach(el=>el.addEventListener('change',()=>{$('manualStartWrap').classList.toggle('hidden',document.querySelector('input[name="startmode"]:checked').value!=='manual');document.querySelector('#startSettings summary').textContent=document.querySelector('input[name="startmode"]:checked').value==='gps'?'📍 Starting location: phone GPS (tap to change)':'📍 Starting location: manual address (tap to change)';invalidate()}));
+let lastStartMode='gps';
+document.querySelectorAll('input[name="startmode"]').forEach(el=>el.addEventListener('change',()=>{if(busy){notify('routeStatus','Wait until the calculation finishes before changing the starting mode.','warn');document.querySelector(`input[name="startmode"][value="${lastStartMode}"]`).checked=true;return}lastStartMode=el.value;$('manualStartWrap').classList.toggle('hidden',document.querySelector('input[name="startmode"]:checked').value!=='manual');document.querySelector('#startSettings summary').textContent=document.querySelector('input[name="startmode"]:checked').value==='gps'?'📍 Starting location: phone GPS (tap to change)':'📍 Starting location: manual address (tap to change)';invalidate()}));
 const fmtSecs=s=>{const m=Math.round(s/60);return m>=60?`${Math.floor(m/60)} hr ${m%60} min`:`${m} min`};
 function gps(){return new Promise((resolve,reject)=>{if(!navigator.geolocation)return reject(Error('Your browser does not support GPS. Choose a manual starting address.'));navigator.geolocation.getCurrentPosition(p=>resolve({lat:p.coords.latitude,lon:p.coords.longitude}),e=>reject(Error('GPS location unavailable or permission refused. Choose a manual starting address.')), {enableHighAccuracy:true,timeout:15000,maximumAge:30000})})}
 let lastGeoRequest=0;
@@ -284,13 +303,13 @@ function togglePriority(address){
   const order=[...pendingRoute.order.filter(i=>priorities.has(normKey(pendingRoute.stops[i]))),
                ...pendingRoute.order.filter(i=>!priorities.has(normKey(pendingRoute.stops[i])))];
   pendingRoute={...pendingRoute,order,mode:'priority-adjusted'};
-  applyLocalRouteChange('Priority selection updated. Priority stops now appear first. Route estimates are updated; Optimise again for the fastest sequence within each group.');
+  applyLocalRouteChange(unplannedStops().length?'Priority saved. At least one stop is not yet routed. Reoptimise before treating this as the full priority sequence.':'Priority selection updated. Priority stops now appear first. Route estimates are updated; Optimise again for the fastest sequence within each group.');
  }else{renderStops();notify('status','Priority saved. Next optimisation will schedule priority stops before ordinary stops.','ok')}
 }
 function advanceRoute(completedIdx){
   const old=pendingRoute;if(!old)return;
   const remaining=old.order.filter(i=>i!==completedIdx);
-  if(!remaining.length){mapLoadId++;clearRouteMap();pendingRoute=null;try{localStorage.removeItem(ROUTEKEY)}catch(_){}$('result').classList.add('hidden');$('routeProgress').classList.add('hidden');$('routeMetrics').classList.add('hidden');$('optimise').textContent='🧭 Optimise remaining stops';notify('routeStatus','Run complete. All stops marked delivered.','ok');return}
+  if(!remaining.length){const extra=addresses.filter(a=>!done.has(normKey(a)));mapLoadId++;clearRouteMap();pendingRoute=null;try{localStorage.removeItem(ROUTEKEY)}catch(_){}$('result').classList.add('hidden');$('routeProgress').classList.add('hidden');$('routeMetrics').classList.add('hidden');$('unplannedWarning').classList.add('hidden');$('optimise').textContent='🧭 Optimise remaining stops';notify('routeStatus',extra.length?`${extra.length} unplanned stop${extra.length===1?'':'s'} remain. Optimise those jobs before finishing.`:'Run complete. All stops marked delivered.',extra.length?'warn':'ok');return}
   // The last completed stop is the new assumed origin. Preserve the prior sequence without an API call.
   const nodeIds=[completedIdx,...remaining].map(i=>i+1);
   const matrix=nodeIds.map(r=>nodeIds.map(c=>old.matrix[r][c]));
@@ -378,18 +397,18 @@ setMapVisible(mapVisible);
 function renderRoute(order,stops,geo,matrix){
  const completedCount=addresses.filter(a=>done.has(normKey(a))).length;
  const progress=$('routeProgress');progress.replaceChildren();
- const heading=document.createElement('strong');heading.textContent=`${completedCount} completed · ${stops.length} remaining`;
- const guidance=document.createElement('small');guidance.textContent=`NEXT: ${stops[order[0]]} · Remember to update HUB separately.`;
+ const extra=unplannedStops();const heading=document.createElement('strong');heading.textContent=`${completedCount} completed · ${stops.length+extra.length} remaining${extra.length?' ('+extra.length+' unrouted)':''}`;
+ const guidance=document.createElement('small');guidance.textContent=`NEXT ON CONFIRMED ROUTE: ${stops[order[0]]} · Remember to update HUB separately.`;
  const bar=document.createElement('div');bar.className='bar';const fill=document.createElement('span');fill.style.width=`${Math.round(100*completedCount/Math.max(1,addresses.length))}%`;bar.append(fill);progress.append(heading,guidance,bar);
  progress.classList.remove('hidden');
  const mode=pendingRoute?.mode||'optimised';
  const metrics=$('routeMetrics');metrics.replaceChildren();
- [['Total driving',`~${fmtSecs(routeTotal(matrix,order))}`],['Next stop drive',`~${fmtSecs(matrix[0][order[0]+1])}`]].forEach(([label,value])=>{
+ [[extra.length?'Confirmed stops only':'Total driving',`~${fmtSecs(routeTotal(matrix,order))}`],['Next stop drive',`~${fmtSecs(matrix[0][order[0]+1])}`]].forEach(([label,value])=>{
   const tile=document.createElement('div');tile.className='metric';const strong=document.createElement('strong');strong.textContent=value;const desc=document.createElement('span');desc.textContent=label;tile.append(strong,desc);metrics.append(tile)});
  metrics.classList.remove('hidden');
  const original=routeTotal(matrix,stops.map((_,i)=>i)),better=original-routeTotal(matrix,order);
- $('comparison').textContent=mode==='manual'?'Manual order: times reflect your chosen sequence, which may not be the fastest.':mode==='priority-adjusted'?'Priority stops are first. Optimise again to minimise driving time in that priority grouping.':priorities.size?'Priority-aware route: urgent stops first. The result may take longer than the unrestricted fastest route.':better>30?`Approx. ${fmtSecs(better)} quicker than pasted order. Times exclude traffic and unloading.`:'Driving-time estimates exclude live traffic and unloading.';
- $('result').classList.remove('hidden');$('optimise').textContent='↻ Reoptimise remaining stops';
+ $('comparison').textContent=extra.length?'⚠ Incomplete route: newly added stops are NOT reflected in the times or map. Reoptimise and review matches.':mode==='manual'?'Manual order: times reflect your chosen sequence, which may not be the fastest.':mode==='priority-adjusted'?'Priority stops are first. Optimise again to minimise driving time in that priority grouping.':priorities.size?'Priority-aware route: urgent stops first. The result may take longer than the unrestricted fastest route.':better>30?`Approx. ${fmtSecs(better)} quicker than pasted order. Times exclude traffic and unloading.`:'Driving-time estimates exclude live traffic and unloading.';
+ $('result').classList.remove('hidden');$('optimise').textContent=extra.length?'↻ Include new stops & optimise':'↻ Reoptimise remaining stops';refreshUnplannedWarning();
  renderStops();updateRouteMap(pendingRoute);
 }
 function renderReview(stops,geos){const box=$('reviewItems');box.replaceChildren();const flags=[];
@@ -401,15 +420,15 @@ function renderReview(stops,geos){const box=$('reviewItems');box.replaceChildren
     item.append(original,match,link,label);box.append(item)});
   $('confirm').disabled=true;$('review').classList.remove('hidden');$('review').scrollIntoView({behavior:'smooth',block:'start'});
 }
-$('confirm').onclick=()=>{if(!pendingRoute)return;const {order,stops,geos,matrix}=pendingRoute;renderRoute(order,stops,geos,matrix);persistRoute();$('review').classList.add('hidden');notify('routeStatus','Map locations confirmed. This is an estimated driving-time order; follow navigation and despatch instructions.','ok');$('runPanel').scrollIntoView({behavior:'smooth',block:'start'})};
-async function optimise(){if(busy)return;const stops=addresses.filter(a=>!done.has(normKey(a)));if(!stops.length)return notify('routeStatus','Please add at least one outstanding address.','warn');if(stops.length>15)return notify('routeStatus','Prototype limit is 15 outstanding stops. Complete or remove some stops first.','warn');busy=true;$('optimise').disabled=true;$('result').classList.add('hidden');$('routeProgress').classList.add('hidden');$('routeMetrics').classList.add('hidden');$('review').classList.add('hidden');pendingRoute=null;renderStops();try{
+$('confirm').onclick=()=>{if(!candidateRoute||busy)return;pendingRoute={...candidateRoute,confirmedAt:Date.now()};candidateRoute=null;const {order,stops,geos,matrix}=pendingRoute;renderRoute(order,stops,geos,matrix);persistRoute();$('review').classList.add('hidden');notify('routeStatus','Map locations confirmed. This is an estimated driving-time order; follow navigation and despatch instructions.','ok');$('runPanel').scrollIntoView({behavior:'smooth',block:'start'})};
+async function optimise(){if(busy)return;const stops=addresses.filter(a=>!done.has(normKey(a)));if(!stops.length)return notify('routeStatus','Please add at least one outstanding address.','warn');if(stops.length>15)return notify('routeStatus','Prototype limit is 15 outstanding stops. Complete or remove some stops first.','warn');busy=true;$('optimise').disabled=true;$('review').classList.add('hidden');candidateRoute=null;renderStops();try{
 notify('routeStatus','Getting your starting location…');const mode=document.querySelector('input[name="startmode"]:checked').value;const start=mode==='gps'?await gps():await (async()=>{const value=normal($('manualStart').value);if(!value)throw Error('Enter a starting street address, or choose GPS.');notify('routeStatus','Looking up starting address…');return geocode(value)})();
 const geos=[];for(let i=0;i<stops.length;i++){notify('routeStatus',`Finding street address ${i+1} of ${stops.length}: ${stops[i]}`);geos.push(await geocode(stops[i]))}
-notify('routeStatus','Checking road travel times and calculating the shortest-time stop order…');const points=[start,...geos];const coords=points.map(p=>`${p.lon},${p.lat}`).join(';');const url=`https://router.project-osrm.org/table/v1/driving/${coords}?annotations=duration`;const res=await fetch(url);if(!res.ok)throw Error(`Routing service unavailable (HTTP ${res.status}). Try again later.`);const data=await res.json();if(data.code!=='Ok'||!Array.isArray(data.durations))throw Error('Could not calculate the driving-time matrix. Check locations and try again.');const matrix=data.durations.map(row=>row.map(v=>v==null?Infinity:v));if(matrix.length!==points.length||matrix.some(row=>!Array.isArray(row)||row.length!==points.length))throw Error('Unexpected routing response.');const order=optimalPath(matrix,stops.map((a,i)=>priorities.has(normKey(a))?i:-1).filter(i=>i>=0));if(!Number.isFinite(routeTotal(matrix,order)))throw Error('No drivable route found between all stops.');routeOrder=order;pendingRoute={order,stops,geos,matrix,start,mode:"optimised"};renderReview(stops,geos);notify('routeStatus',`Calculated an estimated ${stops.length}-stop route. Confirm every map match before viewing the sequence.`,'warn')
-}catch(e){notify('routeStatus',e.message||'Routing failed. Check internet access and retry.','err')}finally{busy=false;$('optimise').disabled=false;renderStops()}}
+notify('routeStatus','Checking road travel times and calculating the shortest-time stop order…');const points=[start,...geos];const coords=points.map(p=>`${p.lon},${p.lat}`).join(';');const url=`https://router.project-osrm.org/table/v1/driving/${coords}?annotations=duration`;const res=await fetch(url);if(!res.ok)throw Error(`Routing service unavailable (HTTP ${res.status}). Try again later.`);const data=await res.json();if(data.code!=='Ok'||!Array.isArray(data.durations))throw Error('Could not calculate the driving-time matrix. Check locations and try again.');const matrix=data.durations.map(row=>row.map(v=>v==null?Infinity:v));if(matrix.length!==points.length||matrix.some(row=>!Array.isArray(row)||row.length!==points.length))throw Error('Unexpected routing response.');const order=optimalPath(matrix,stops.map((a,i)=>priorities.has(normKey(a))?i:-1).filter(i=>i>=0));if(!Number.isFinite(routeTotal(matrix,order)))throw Error('No drivable route found between all stops.');routeOrder=order;candidateRoute={order,stops,geos,matrix,start,mode:'optimised'};renderReview(stops,geos);notify('routeStatus',`Calculated an estimated ${stops.length}-stop route. Verify every map pin before this proposal replaces your confirmed route.`,'warn')
+}catch(e){candidateRoute=null;notify('routeStatus',(e.message||'Routing failed. Check internet access and retry.')+(pendingRoute?' Previous confirmed route is still available.':''),'err')}finally{busy=false;$('optimise').disabled=false;renderStops()}}
 $('optimise').onclick=optimise;renderStops();
 try{const restored=JSON.parse(localStorage.getItem(ROUTEKEY)||'null');if(restored&&Array.isArray(restored.stops)&&Array.isArray(restored.geos)&&Array.isArray(restored.order)&&Array.isArray(restored.matrix)&&restored.stops.length>0&&restored.stops.every(a=>addresses.some(v=>normKey(v)===normKey(a))&&!done.has(normKey(a)))&&restored.matrix.length===restored.stops.length+1&&restored.matrix.every(row=>Array.isArray(row)&&row.length===restored.matrix.length)&&restored.order.length===restored.stops.length&&new Set(restored.order).size===restored.stops.length&&restored.order.every(i=>Number.isInteger(i)&&i>=0&&i<restored.stops.length)){
- pendingRoute=restored;renderRoute(restored.order,restored.stops,restored.geos,restored.matrix);notify('routeStatus','Verified route restored from this phone. Recalculate from GPS if you have moved or new jobs arrive.','ok')
+ pendingRoute=restored;renderRoute(restored.order,restored.stops,restored.geos,restored.matrix);notify('routeStatus',unplannedStops().length?'Previous confirmed route restored. Newly added addresses are not yet included; reoptimise and verify the matches.':'Confirmed route restored from this phone. Recalculate from GPS if you have moved or new jobs arrive.',unplannedStops().length?'warn':'ok')
 }}catch(_){try{localStorage.removeItem(ROUTEKEY)}catch(__){}}
 })();
 </script></body></html>
