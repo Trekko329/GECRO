@@ -99,7 +99,7 @@ main{max-width:660px;padding-top:15px}
 </style>
 </head>
 <body><main>
-<header class="top"><div><h1>GECRO <span style="color:#4dcbea">Driver</span></h1><p class="sub">One-screen delivery run · v0.12</p></div><span class="pill">🚚 Open route</span></header>
+<header class="top"><div><h1>GECRO <span style="color:#4dcbea">Driver</span></h1><p class="sub">One-screen delivery run · v0.13</p></div><span class="pill">🚚 Open route</span></header>
 <details class="notice compact"><summary><strong>Prototype testing only · public addresses</strong></summary>Public OpenStreetMap lookup and OSRM demo routing services are not suitable for commercial fleet deployment. Use dummy or publicly listed addresses only. Check all map matches. Estimates exclude live traffic and unloading.</details>
 <section class="panel run-panel" id="runPanel">
   <div class="between run-heading"><h2>My delivery run</h2><span class="count" id="count">0 stops</span></div>
@@ -111,10 +111,10 @@ main{max-width:660px;padding-top:15px}
   <button class="primary full row-gap" id="optimise">🧭 Optimise remaining stops</button>
   <div class="status" id="routeStatus" role="status" aria-live="polite">Add addresses, then optimise from your GPS position.</div>
   <div class="route-warning hidden" id="unplannedWarning" role="status" aria-live="polite"></div>
-  <div id="review" class="hidden"><h2 class="row-gap">Check the address matches</h2><p class="small">This is a proposed route only. Your previous confirmed route stays active until every new location is checked and you tap Confirm.</p><div id="reviewItems"></div><button class="primary full row-gap" id="confirm" disabled>✓ Confirm all matches &amp; show route</button></div>
+  <div id="review" class="hidden"><h2 class="row-gap">Check new address matches</h2><p class="small" id="reviewSummary">Previously verified stops stay approved. Only newly added or changed addresses need your confirmation.</p><div id="reviewItems"></div><button class="primary full row-gap" id="confirm" disabled>✓ Confirm new addresses &amp; update route</button></div>
   <div class="between"><div class="stop-list-title">Outstanding stops <span id="stopOrderLabel" class="small">· Added order</span></div></div>
   <div id="stops" aria-label="Outstanding delivery stops, drag the handles to reorder"></div>
-  <p class="small" id="reopenHelp">Drag ⠿ to reorder, ★ for priority, tick a delivered stop, or expand Completed to reopen it. Newly added jobs remain clearly marked until reoptimised.</p>
+  <p class="small" id="reopenHelp">Drag ⠿ to reorder, ★ for priority, tick a delivered stop, or expand Completed to reopen it. Newly added jobs remain clearly marked until reoptimised; only new addresses need verification.</p>
   <details id="completedSection" class="hidden"><summary id="completedSummary">Completed (0) · tap to reopen</summary><div id="completedStops"></div></details>
   <div id="result" class="hidden">
     <p class="small" id="comparison"></p>
@@ -131,19 +131,36 @@ main{max-width:660px;padding-top:15px}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>
 (()=>{'use strict';
-const KEY='gecro-driver-addresses-v03', DONEKEY='gecro-driver-done-v04', GEOKEY='gecro-driver-geocache-v04', ROUTEKEY='gecro-driver-confirmed-route-v06', PRIORITYKEY='gecro-driver-priorities-v10';
+const KEY='gecro-driver-addresses-v03', DONEKEY='gecro-driver-done-v04', GEOKEY='gecro-driver-geocache-v04', ROUTEKEY='gecro-driver-confirmed-route-v06', PRIORITYKEY='gecro-driver-priorities-v10', VERIFIEDKEY='gecro-driver-verified-addresses-v013';
 const $=id=>document.getElementById(id);let addresses=[],done=new Set(),priorities=new Set(),routeOrder=[],matched=new Map(),busy=false,geoCache={},undoState=null,pendingRoute=null;
 let leafletMap=null, leafletPins=null, leafletLine=null, mapLoadId=0, mapSignature="", mapBounds=null, mapStopMarkers=[];
-let candidateRoute=null; // Unconfirmed calculations never become the active route.
+let candidateRoute=null, verifiedMatches=Object.create(null); // Unconfirmed calculations never become the active route.
 const MAPKEY='gecro-driver-map-visible-v09';let mapVisible=false;
 try{mapVisible=localStorage.getItem(MAPKEY)==='shown'}catch(_){}
 try{const v=JSON.parse(localStorage.getItem(KEY)||'[]');if(Array.isArray(v))addresses=v.filter(x=>typeof x==='string').slice(0,100)}catch(_){}
 try{const v=JSON.parse(localStorage.getItem(DONEKEY)||'[]');if(Array.isArray(v))done=new Set(v.filter(x=>typeof x==='string'))}catch(_){}
 try{const v=JSON.parse(localStorage.getItem(PRIORITYKEY)||'[]');if(Array.isArray(v))priorities=new Set(v.filter(x=>typeof x==='string'))}catch(_){}
 try{geoCache=JSON.parse(localStorage.getItem(GEOKEY)||'{}')||{}}catch(_){}
+try{const old=JSON.parse(localStorage.getItem(VERIFIEDKEY)||'{}');if(old&&typeof old==='object'&&!Array.isArray(old)){
+ for(const [k,point] of Object.entries(old))if(typeof k==='string'&&validPoint(point))verifiedMatches[k]={lat:Number(point.lat),lon:Number(point.lon),label:point.label,verifiedAt:Number(point.verifiedAt)||Date.now()};
+}}catch(_){}
 const normal=s=>String(s||'').trim().replace(/\s+/g,' ');const normKey=s=>normal(s).toLocaleLowerCase('en-AU').replace(/[.,]/g,'');const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+// A lookup result is not "verified" until a driver confirms its pin, or it belongs
+// to a previously confirmed v0.12 route being migrated on first load.
+function validPoint(p){return p&&Number.isFinite(Number(p.lat))&&Number.isFinite(Number(p.lon))&&Math.abs(Number(p.lat))<=90&&Math.abs(Number(p.lon))<=180&&typeof p.label==='string'&&p.label.length>0}
+function approvedPoint(address){return verifiedMatches[normKey(address)]||null}
+function approveMatches(stops,geos){
+ let updated=false;for(let i=0;i<stops.length;i++){
+  const key=normKey(stops[i]);if(!key||!validPoint(geos[i]))continue;
+  const existing=verifiedMatches[key],geo=geos[i];
+  if(!existing||existing.lat!==Number(geo.lat)||existing.lon!==Number(geo.lon)||existing.label!==geo.label){
+   verifiedMatches[key]={lat:Number(geo.lat),lon:Number(geo.lon),label:geo.label,verifiedAt:Date.now()};updated=true;
+  }
+ }
+ if(updated)save();
+}
 function notify(id,message,type=''){const e=$(id);e.textContent=message;e.className='status '+type;if(id==='status')e.classList.remove('hidden')}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(addresses));localStorage.setItem(DONEKEY,JSON.stringify([...done]));localStorage.setItem(GEOKEY,JSON.stringify(geoCache));localStorage.setItem(PRIORITYKEY,JSON.stringify([...priorities]))}catch(_){notify('status','Browser storage is unavailable. Keep this page open.','warn')}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(addresses));localStorage.setItem(DONEKEY,JSON.stringify([...done]));localStorage.setItem(GEOKEY,JSON.stringify(geoCache));localStorage.setItem(PRIORITYKEY,JSON.stringify([...priorities]));localStorage.setItem(VERIFIEDKEY,JSON.stringify(verifiedMatches))}catch(_){notify('status','Browser storage is unavailable. Keep this page open.','warn')}}
 function invalidate(){$('unplannedWarning').classList.add('hidden');candidateRoute=null;mapLoadId++;mapSignature="";clearRouteMap();try{localStorage.removeItem(ROUTEKEY)}catch(_){}pendingRoute=null;$('review').classList.add('hidden');routeOrder=[];matched.clear();$('result').classList.add('hidden');$('routeProgress').classList.add('hidden');$('routeMetrics').classList.add('hidden');$('optimise').textContent='🧭 Optimise remaining stops';notify('routeStatus','Stop list changed. Optimise again when ready.','warn')}
 function snapshot(){if(candidateRoute){candidateRoute=null;$('review').classList.add('hidden');notify('routeStatus','The stop list changed, so the unconfirmed route proposal was discarded. Reoptimise to include your latest changes.','warn')}undoState={addresses:[...addresses],done:[...done],priorities:[...priorities],route:pendingRoute?JSON.parse(JSON.stringify(pendingRoute)):null};$('undo').disabled=false}
 $('undo').onclick=()=>{if(busy){notify('status','Please finish route calculation before undoing.','warn');return}if(!undoState)return;const prior=undoState;addresses=prior.addresses;done=new Set(prior.done);priorities=new Set(prior.priorities||[]);undoState=null;$('undo').disabled=true;save();invalidate();if(prior.route){pendingRoute=prior.route;persistRoute();renderRoute(prior.route.order,prior.route.stops,prior.route.geos,prior.route.matrix);notify('routeStatus','Previous route restored. Recalculate if your position has changed.','ok')}renderStops();notify('status','Last change undone.','ok')};
@@ -155,7 +172,7 @@ function unplannedStops(route=pendingRoute){
 function refreshUnplannedWarning(){
  const extra=unplannedStops();const box=$('unplannedWarning');
  box.classList.toggle('hidden',!extra.length);
- if(extra.length)box.textContent=`⚠ ${extra.length} new/unrouted stop${extra.length===1?'':'s'} not included in the map or driving-time estimate. Reoptimise and confirm the new address matches before relying on the full run.`;
+ if(extra.length)box.textContent=`⚠ ${extra.length} new/unrouted stop${extra.length===1?'':'s'} not included in the map or driving-time estimate. Reoptimise when safe. Only addresses you have not verified previously will require confirmation.`;
 }
 function listedOutstanding(){
  const all=addresses.filter(a=>!done.has(normKey(a)));
@@ -407,28 +424,56 @@ function renderRoute(order,stops,geo,matrix){
   const tile=document.createElement('div');tile.className='metric';const strong=document.createElement('strong');strong.textContent=value;const desc=document.createElement('span');desc.textContent=label;tile.append(strong,desc);metrics.append(tile)});
  metrics.classList.remove('hidden');
  const original=routeTotal(matrix,stops.map((_,i)=>i)),better=original-routeTotal(matrix,order);
- $('comparison').textContent=extra.length?'⚠ Incomplete route: newly added stops are NOT reflected in the times or map. Reoptimise and review matches.':mode==='manual'?'Manual order: times reflect your chosen sequence, which may not be the fastest.':mode==='priority-adjusted'?'Priority stops are first. Optimise again to minimise driving time in that priority grouping.':priorities.size?'Priority-aware route: urgent stops first. The result may take longer than the unrestricted fastest route.':better>30?`Approx. ${fmtSecs(better)} quicker than pasted order. Times exclude traffic and unloading.`:'Driving-time estimates exclude live traffic and unloading.';
+ $('comparison').textContent=extra.length?'⚠ Incomplete route: newly added stops are NOT reflected in the times or map. Reoptimise; only new addresses need checking.':mode==='manual'?'Manual order: times reflect your chosen sequence, which may not be the fastest.':mode==='priority-adjusted'?'Priority stops are first. Optimise again to minimise driving time in that priority grouping.':priorities.size?'Priority-aware route: urgent stops first. The result may take longer than the unrestricted fastest route.':better>30?`Approx. ${fmtSecs(better)} quicker than pasted order. Times exclude traffic and unloading.`:'Driving-time estimates exclude live traffic and unloading.';
  $('result').classList.remove('hidden');$('optimise').textContent=extra.length?'↻ Include new stops & optimise':'↻ Reoptimise remaining stops';refreshUnplannedWarning();
  renderStops();updateRouteMap(pendingRoute);
 }
-function renderReview(stops,geos){const box=$('reviewItems');box.replaceChildren();const flags=[];
-  stops.forEach((address,i)=>{const item=document.createElement('div');item.className='review-item';
-    const original=document.createElement('strong');original.textContent=`${i+1}. HUB: ${address}`;
-    const match=document.createElement('div');match.className='mapmatch';match.textContent=`Matched: ${geos[i].label}`;
-    const link=document.createElement('a');link.href=`https://www.google.com/maps/search/?${new URLSearchParams({api:'1',query:`${geos[i].lat},${geos[i].lon}`})}`;link.target='_blank';link.rel='noopener';link.textContent='View matched pin on Google Maps';
-    const label=document.createElement('label');const check=document.createElement('input');check.type='checkbox';check.setAttribute('aria-label',`Confirm address match for ${address}`);const txt=document.createElement('span');txt.textContent='This pin is the correct delivery location';label.append(check,txt);flags.push(check);check.onchange=()=>{$('confirm').disabled=!flags.every(c=>c.checked)};
-    item.append(original,match,link,label);box.append(item)});
-  $('confirm').disabled=true;$('review').classList.remove('hidden');$('review').scrollIntoView({behavior:'smooth',block:'start'});
+function activateCandidateRoute(message){
+ if(!candidateRoute)return;
+ const proposed=candidateRoute;candidateRoute=null;
+ // Save approval only AFTER the driver has checked each new address.
+ approveMatches(proposed.stops,proposed.geos);
+ pendingRoute={...proposed,confirmedAt:Date.now()};
+ persistRoute();$('review').classList.add('hidden');
+ renderRoute(pendingRoute.order,pendingRoute.stops,pendingRoute.geos,pendingRoute.matrix);
+ notify('routeStatus',message,'ok');$('runPanel').scrollIntoView({behavior:'smooth',block:'start'});
 }
-$('confirm').onclick=()=>{if(!candidateRoute||busy)return;pendingRoute={...candidateRoute,confirmedAt:Date.now()};candidateRoute=null;const {order,stops,geos,matrix}=pendingRoute;renderRoute(order,stops,geos,matrix);persistRoute();$('review').classList.add('hidden');notify('routeStatus','Map locations confirmed. This is an estimated driving-time order; follow navigation and despatch instructions.','ok');$('runPanel').scrollIntoView({behavior:'smooth',block:'start'})};
+function renderReview(stops,geos){
+ const box=$('reviewItems');box.replaceChildren();const flags=[];
+ const unverified=stops.map((address,i)=>({address,point:geos[i],i})).filter(({address})=>!approvedPoint(address));
+ if(!unverified.length){$('review').classList.add('hidden');activateCandidateRoute('Route updated. All stops have already been verified; no further confirmation needed.');return}
+ $('reviewSummary').textContent=`${unverified.length} new or changed address${unverified.length===1?'':'es'} to check · ${stops.length-unverified.length} previously verified stop${stops.length-unverified.length===1?'':'s'} carried over automatically. Your previous route stays active until you confirm.`;
+ unverified.forEach(({address,point,i})=>{
+  const item=document.createElement('div');item.className='review-item';
+  const original=document.createElement('strong');original.textContent=`New stop: ${address}`;
+  const match=document.createElement('div');match.className='mapmatch';match.textContent=`Matched: ${point.label}`;
+  const link=document.createElement('a');link.href=`https://www.google.com/maps/search/?${new URLSearchParams({api:'1',query:`${point.lat},${point.lon}`})}`;link.target='_blank';link.rel='noopener';link.textContent='View matched pin on Google Maps';
+  const label=document.createElement('label');const check=document.createElement('input');check.type='checkbox';check.setAttribute('aria-label',`Confirm address match for ${address}`);
+  const txt=document.createElement('span');txt.textContent='This pin is the correct delivery location';label.append(check,txt);flags.push(check);
+  check.onchange=()=>{$('confirm').disabled=!flags.every(c=>c.checked)};
+  item.append(original,match,link,label);box.append(item);
+ });
+ $('confirm').disabled=true;$('review').classList.remove('hidden');$('review').scrollIntoView({behavior:'smooth',block:'start'});
+}
+$('confirm').onclick=()=>{if(!candidateRoute||busy||$('confirm').disabled)return;activateCandidateRoute('New address matches confirmed. Previously verified stops were kept without another review.');};
 async function optimise(){if(busy)return;const stops=addresses.filter(a=>!done.has(normKey(a)));if(!stops.length)return notify('routeStatus','Please add at least one outstanding address.','warn');if(stops.length>15)return notify('routeStatus','Prototype limit is 15 outstanding stops. Complete or remove some stops first.','warn');busy=true;$('optimise').disabled=true;$('review').classList.add('hidden');candidateRoute=null;renderStops();try{
 notify('routeStatus','Getting your starting location…');const mode=document.querySelector('input[name="startmode"]:checked').value;const start=mode==='gps'?await gps():await (async()=>{const value=normal($('manualStart').value);if(!value)throw Error('Enter a starting street address, or choose GPS.');notify('routeStatus','Looking up starting address…');return geocode(value)})();
-const geos=[];for(let i=0;i<stops.length;i++){notify('routeStatus',`Finding street address ${i+1} of ${stops.length}: ${stops[i]}`);geos.push(await geocode(stops[i]))}
-notify('routeStatus','Checking road travel times and calculating the shortest-time stop order…');const points=[start,...geos];const coords=points.map(p=>`${p.lon},${p.lat}`).join(';');const url=`https://router.project-osrm.org/table/v1/driving/${coords}?annotations=duration`;const res=await fetch(url);if(!res.ok)throw Error(`Routing service unavailable (HTTP ${res.status}). Try again later.`);const data=await res.json();if(data.code!=='Ok'||!Array.isArray(data.durations))throw Error('Could not calculate the driving-time matrix. Check locations and try again.');const matrix=data.durations.map(row=>row.map(v=>v==null?Infinity:v));if(matrix.length!==points.length||matrix.some(row=>!Array.isArray(row)||row.length!==points.length))throw Error('Unexpected routing response.');const order=optimalPath(matrix,stops.map((a,i)=>priorities.has(normKey(a))?i:-1).filter(i=>i>=0));if(!Number.isFinite(routeTotal(matrix,order)))throw Error('No drivable route found between all stops.');routeOrder=order;candidateRoute={order,stops,geos,matrix,start,mode:'optimised'};renderReview(stops,geos);notify('routeStatus',`Calculated an estimated ${stops.length}-stop route. Verify every map pin before this proposal replaces your confirmed route.`,'warn')
+const geos=[];for(let i=0;i<stops.length;i++){
+ const approved=approvedPoint(stops[i]);
+ if(approved){geos.push(approved);continue}
+ notify('routeStatus',`Finding new street address ${i+1} of ${stops.length}: ${stops[i]}`);
+ geos.push(await geocode(stops[i]));
+}
+notify('routeStatus','Checking road travel times and calculating the shortest-time stop order…');const points=[start,...geos];const coords=points.map(p=>`${p.lon},${p.lat}`).join(';');const url=`https://router.project-osrm.org/table/v1/driving/${coords}?annotations=duration`;const res=await fetch(url);if(!res.ok)throw Error(`Routing service unavailable (HTTP ${res.status}). Try again later.`);const data=await res.json();if(data.code!=='Ok'||!Array.isArray(data.durations))throw Error('Could not calculate the driving-time matrix. Check locations and try again.');const matrix=data.durations.map(row=>row.map(v=>v==null?Infinity:v));if(matrix.length!==points.length||matrix.some(row=>!Array.isArray(row)||row.length!==points.length))throw Error('Unexpected routing response.');const order=optimalPath(matrix,stops.map((a,i)=>priorities.has(normKey(a))?i:-1).filter(i=>i>=0));if(!Number.isFinite(routeTotal(matrix,order)))throw Error('No drivable route found between all stops.');routeOrder=order;candidateRoute={order,stops,geos,matrix,start,mode:'optimised'};const newCount=stops.filter(a=>!approvedPoint(a)).length;renderReview(stops,geos);if(newCount)notify('routeStatus',`Route calculated. Check only ${newCount} new or changed address${newCount===1?'':'es'} before updating your route. Existing verified stops remain approved.`,'warn')
 }catch(e){candidateRoute=null;notify('routeStatus',(e.message||'Routing failed. Check internet access and retry.')+(pendingRoute?' Previous confirmed route is still available.':''),'err')}finally{busy=false;$('optimise').disabled=false;renderStops()}}
 $('optimise').onclick=optimise;renderStops();
 try{const restored=JSON.parse(localStorage.getItem(ROUTEKEY)||'null');if(restored&&Array.isArray(restored.stops)&&Array.isArray(restored.geos)&&Array.isArray(restored.order)&&Array.isArray(restored.matrix)&&restored.stops.length>0&&restored.stops.every(a=>addresses.some(v=>normKey(v)===normKey(a))&&!done.has(normKey(a)))&&restored.matrix.length===restored.stops.length+1&&restored.matrix.every(row=>Array.isArray(row)&&row.length===restored.matrix.length)&&restored.order.length===restored.stops.length&&new Set(restored.order).size===restored.stops.length&&restored.order.every(i=>Number.isInteger(i)&&i>=0&&i<restored.stops.length)){
- pendingRoute=restored;renderRoute(restored.order,restored.stops,restored.geos,restored.matrix);notify('routeStatus',unplannedStops().length?'Previous confirmed route restored. Newly added addresses are not yet included; reoptimise and verify the matches.':'Confirmed route restored from this phone. Recalculate from GPS if you have moved or new jobs arrive.',unplannedStops().length?'warn':'ok')
+ pendingRoute=restored;
+ // Migration: the saved v0.12 route was explicitly approved by the driver.
+ // Seed approved addresses from it without trusting unconfirmed geocoding-cache entries.
+ approveMatches(restored.stops,restored.geos);
+ renderRoute(restored.order,restored.stops,restored.geos,restored.matrix);
+ notify('routeStatus',unplannedStops().length?'Previous confirmed route restored. Reoptimise when safe; only newly added addresses need verification.':'Confirmed route restored from this phone. Existing stops will not require re-verification.',unplannedStops().length?'warn':'ok')
 }}catch(_){try{localStorage.removeItem(ROUTEKEY)}catch(__){}}
 })();
 </script></body></html>
