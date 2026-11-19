@@ -1,221 +1,36 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en-AU">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>GEELONG EXPRESS COURIER ROUTE OPTIMATISATION (GECRO)</title>
-  <style>
-    body { font-family: Arial, sans-serif; background:#eee; margin:0; padding:24px; }
-    .wrap { max-width: 900px; margin: 0 auto; }
-    h1 { font-size: 22px; margin: 0 0 16px 0; }
-    .row { display:flex; gap:12px; margin-bottom:10px; }
-    label { width: 70px; padding-top:10px; }
-    input, select { flex:1; padding:10px; border:1px solid #bbb; border-radius:8px; }
-    .btn { background:#d11; color:white; border:none; padding:12px 16px; border-radius:10px; cursor:pointer; }
-    .btn:disabled { background:#999; cursor:not-allowed; }
-    .box { background:white; padding:14px; border-radius:12px; border:1px solid #ccc; margin-top:16px; }
-    .muted { color:#555; font-size: 14px; }
-    .warning { color:#b00; font-size:14px; }
-    a { word-break: break-all; }
-  </style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101a2b"><title>GECRO Driver | Clipboard Test</title>
+<style>
+:root{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#eaf1fb;background:#0b1321;color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:linear-gradient(155deg,#111f36,#0b1321 45%);padding:env(safe-area-inset-top) 16px env(safe-area-inset-bottom)}main{max-width:560px;margin:auto;padding:24px 0 40px}.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:24px}h1{font-size:27px;margin:0;letter-spacing:-.8px}.sub{color:#9aabc3;font-size:13px;margin:5px 0 0}.pill{font-size:11px;border:1px solid #47657e;color:#a7dcf2;border-radius:40px;padding:7px 10px;white-space:nowrap}.panel{background:#16243a;border:1px solid #304059;border-radius:19px;padding:18px;margin:12px 0;box-shadow:0 7px 28px #0002}h2{margin:0 0 13px;font-size:17px}p{line-height:1.5}.muted{color:#a8b6c9;font-size:13px}.steps{font-size:13px;color:#b9c8db;line-height:1.75;margin:0;padding-left:23px}.primary,.secondary,.danger{font:inherit;font-weight:700;font-size:15px;cursor:pointer;border-radius:12px;padding:14px 16px;min-height:48px}.primary{background:#32b8e2;border:1px solid #32b8e2;color:#081625}.secondary{background:#23334c;border:1px solid #4d6684;color:#f0f6fe}.danger{background:transparent;border:1px solid #7d4554;color:#ffbac2}.primary:disabled{opacity:.45;cursor:default}.full{width:100%}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}textarea{background:#0d1a2d;border:1px solid #55708f;color:#fff;border-radius:12px;padding:13px;font:inherit;font-size:16px;resize:vertical;width:100%;min-height:85px;outline-offset:3px}textarea:focus{outline:2px solid #3abde6}.status{padding:11px 13px;border-radius:12px;background:#203047;color:#c9d8e9;font-size:13px;line-height:1.5;margin-top:12px}.status.ok{background:#123d37;color:#a1f3d3}.status.warn{background:#4a3420;color:#ffe0aa}.status.err{background:#4b2530;color:#ffd0d8}.stop{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #304059}.stop:last-child{border-bottom:none}.num{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;background:#263c58;color:#acd8fa;font-weight:750;flex:0 0 30px}.address{font-size:14px;line-height:1.4;flex:1;min-width:0;overflow-wrap:anywhere}.remove{background:transparent;border:1px solid #4b607b;border-radius:9px;color:#c6d6e9;width:35px;height:35px;font-size:19px;cursor:pointer}.count{font-size:13px;color:#a7b9d2}.footer{font-size:12px;line-height:1.65;color:#94a9c3;margin-top:17px}a{color:#8adfff}.gap{height:10px}.highlight{color:#73dbfa;font-weight:700}button:focus-visible{outline:3px solid #f7df75;outline-offset:2px}#empty{color:#9eafc5;font-size:14px;padding:12px 0}
+</style>
 </head>
-<body>
-  <div class="wrap">
-    <h1>GEELONG EXPRESS COURIER ROUTE OPTIMATISATION (GECRO)</h1>
-    <p>
-      Tired of opening delivery locations one by one from the HUB Mobile app?
-      GECRO shows where all your destinations are on your map for you.
-    </p>
-
-    <div class="box">
-      <div class="muted">
-        Start: <b>MY LOCATION</b> (browser permission). Enter stops below.
-      </div>
-      <div style="height:12px"></div>
-
-      <!-- App selector -->
-      <div class="row">
-        <label for="provider">App</label>
-        <select id="provider">
-          <option value="google" selected>Google Maps (max 10 incl. start)</option>
-          <option value="apple">Apple Maps (max 14 incl. start)</option>
-        </select>
-      </div>
-
-      <!-- Apple warning -->
-      <div id="appleWarning" class="warning" style="display:none; margin-top:6px;">
-        ⚠️ Warning: Apple Maps links are not compatible on PC.
-        Best used on iPhone / Apple Maps / CarPlay.
-      </div>
-
-      <div style="height:12px"></div>
-
-      <!-- Start override -->
-      <div class="row">
-        <label for="startAddr">Start</label>
-        <input id="startAddr" placeholder="(Optional) Enter start address if My Location is wrong" />
-      </div>
-
-      <div class="muted" style="margin-top:-6px;">
-        If Apple starts in the wrong city/state, type your start address above.
-      </div>
-
-      <div style="height:12px"></div>
-
-      <div id="stops"></div>
-
-      <div style="height:14px"></div>
-      <button id="gen" class="btn">GENERATE LINK</button>
-
-      <div id="out" class="box" style="display:none;">
-        <div><b>Route link:</b></div>
-        <div style="height:8px"></div>
-        <a id="link" href="#" target="_blank" rel="noopener"></a>
-        <div style="height:10px"></div>
-        <button id="copy" class="btn" style="background:#444;">COPY LINK</button>
-        <div id="status" class="muted" style="margin-top:10px;"></div>
-      </div>
-
-      <div id="err" class="muted" style="margin-top:12px; color:#b00;"></div>
-    </div>
-  </div>
-
+<body><main>
+<header class="top"><div><h1>GECRO <span style="color:#4dcbea">Driver</span></h1><p class="sub">Clipboard test · v0.3</p></div><span class="pill">📋 Paste-to-run</span></header>
+<section class="panel"><h2>Test it with HUB Mobile</h2><ol class="steps"><li>Copy one address in HUB Mobile.</li><li>Return to this page and tap <strong>Paste &amp; Add</strong>.</li><li>Repeat for your other delivery addresses.</li></ol></section>
+<section class="panel"><h2>Add a delivery address</h2><button class="primary full" id="paste">📋 Paste &amp; Add from clipboard</button><p class="muted" style="margin:14px 0 7px">If your browser blocks clipboard access, paste the address here instead:</p><textarea id="manual" placeholder="Long-press here and tap Paste, or type an address" aria-label="Delivery address"></textarea><div class="gap"></div><button class="secondary full" id="add">＋ Add address from text box</button><div class="status" id="status" role="status" aria-live="polite">Ready. Copy an address in HUB, then try Paste &amp; Add.</div></section>
+<section class="panel"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><h2>Your delivery stops</h2><span class="count" id="count">0 stops</span></div><div id="stops"></div><div class="grid" style="margin-top:14px"><button class="secondary" id="copy">Copy full list</button><button class="danger" id="clear">Clear all</button></div></section>
+<section class="panel"><h2>Next step: route optimisation</h2><p class="muted" style="margin:0">This test checks address collection, duplicate handling and saving between app switches. The addresses are <strong>not yet rearranged</strong>. Road-based optimisation will be added after we've verified clipboard behaviour on drivers' phones.</p></section>
+<p class="footer">Stops are stored locally in this browser on this phone, not sent to a server. Clearing browser data or using private browsing may remove them. Clipboard read usually requires a secure HTTPS page or localhost and a user tap. Opening an HTML file directly may block the button; the manual paste field is the fallback. Avoid entering real customer addresses on shared devices.</p>
+</main>
 <script>
-  const stopsDiv = document.getElementById("stops");
-  const providerSel = document.getElementById("provider");
-  const startAddrEl = document.getElementById("startAddr");
-  const appleWarning = document.getElementById("appleWarning");
-
-  const genBtn = document.getElementById("gen");
-  const outBox = document.getElementById("out");
-  const linkA  = document.getElementById("link");
-  const copyBtn = document.getElementById("copy");
-  const status = document.getElementById("status");
-  const err = document.getElementById("err");
-
-  function clean(s) {
-    return (s || "").trim().replace(/\s+/g, " ");
-  }
-
-  function maxStopsForProvider(provider) {
-    return provider === "apple" ? 13 : 9;
-  }
-
-  function renderStopInputs() {
-    const maxStops = maxStopsForProvider(providerSel.value);
-    stopsDiv.innerHTML = "";
-
-    for (let i = 1; i <= maxStops; i++) {
-      const row = document.createElement("div");
-      row.className = "row";
-      row.innerHTML = `
-        <label for="stop${i}">Stop ${i}</label>
-        <input id="stop${i}" placeholder="Enter address (e.g., 195 Rouse St, Port Melbourne)" />
-      `;
-      stopsDiv.appendChild(row);
-    }
-  }
-
-  function gmapsDirUrl(origin, destination, waypoints) {
-    const base = "https://www.google.com/maps/dir/?api=1";
-    const params = new URLSearchParams();
-    if (origin) params.set("origin", origin);
-    if (destination) params.set("destination", destination);
-    if (waypoints.length) params.set("waypoints", waypoints.join("|"));
-    params.set("travelmode", "driving");
-    return `${base}&${params.toString()}`;
-  }
-
-  function appleMapsUrl(origin, stops) {
-    const base = "https://maps.apple.com/?";
-    const params = new URLSearchParams();
-    params.set("dirflg", "d");
-    if (origin) params.set("saddr", origin);
-
-    let daddr = stops[0];
-    for (let i = 1; i < stops.length; i++) {
-      daddr += ` to:${stops[i]}`;
-    }
-    params.set("daddr", daddr);
-
-    return base + params.toString();
-  }
-
-  async function getMyLocationLatLng() {
-    return new Promise((resolve, reject) => {
-      if (!navigator.geolocation) reject();
-      navigator.geolocation.getCurrentPosition(
-        pos => resolve(`${pos.coords.latitude},${pos.coords.longitude}`),
-        () => reject(),
-        { enableHighAccuracy: true, timeout: 8000 }
-      );
-    });
-  }
-
-  renderStopInputs();
-
-  providerSel.addEventListener("change", () => {
-    outBox.style.display = "none";
-    err.textContent = "";
-    status.textContent = "";
-
-    appleWarning.style.display =
-      providerSel.value === "apple" ? "block" : "none";
-
-    renderStopInputs();
-  });
-
-  genBtn.addEventListener("click", async () => {
-    err.textContent = "";
-    outBox.style.display = "none";
-
-    const provider = providerSel.value;
-    const maxStops = maxStopsForProvider(provider);
-    const stops = [];
-
-    for (let i = 1; i <= maxStops; i++) {
-      const v = clean(document.getElementById(`stop${i}`)?.value);
-      if (v) stops.push(v);
-    }
-
-    if (!stops.length) {
-      err.textContent = "Please enter at least one stop.";
-      return;
-    }
-
-    let origin = clean(startAddrEl.value);
-    if (!origin) {
-      try {
-        origin = await getMyLocationLatLng();
-      } catch {
-        if (provider === "apple") {
-          err.textContent = "Please enter a Start address for Apple Maps on PC.";
-          return;
-        }
-        origin = "Current Location";
-      }
-    }
-
-    let url = "";
-    if (provider === "apple") {
-      url = appleMapsUrl(origin, stops);
-    } else {
-      url = gmapsDirUrl(origin, stops[stops.length - 1], stops.slice(0, -1));
-    }
-
-    linkA.href = url;
-    linkA.textContent = url;
-    outBox.style.display = "block";
-  });
-
-  copyBtn.addEventListener("click", async () => {
-    try {
-      await navigator.clipboard.writeText(linkA.href);
-      status.textContent = "Copied to clipboard.";
-    } catch {
-      status.textContent = "Copy failed.";
-    }
-  });
-</script>
-</body>
-</html>
+(()=>{'use strict';
+ const KEY='gecro-driver-addresses-v03';
+ const $=id=>document.getElementById(id);
+ let addresses=[];
+ try{const saved=JSON.parse(localStorage.getItem(KEY)||'[]');if(Array.isArray(saved))addresses=saved.filter(x=>typeof x==='string').slice(0,200)}catch(_){}
+ const normal=s=>s.trim().replace(/\s+/g,' ');
+ const normKey=s=>normal(s).toLocaleLowerCase('en-AU').replace(/[.,]/g,'');
+ const status=(message,type='')=>{const e=$('status');e.textContent=message;e.className='status '+type};
+ function persist(){try{localStorage.setItem(KEY,JSON.stringify(addresses))}catch(_){status('Address added, but browser storage is unavailable. Keep this tab open.','warn')}}
+ function render(){const root=$('stops');root.replaceChildren();$('count').textContent=`${addresses.length} stop${addresses.length===1?'':'s'}`;if(!addresses.length){const empty=document.createElement('div');empty.id='empty';empty.textContent='No addresses added yet.';root.append(empty)}addresses.forEach((a,i)=>{const row=document.createElement('div');row.className='stop';const n=document.createElement('div');n.className='num';n.textContent=i+1;const text=document.createElement('div');text.className='address';text.textContent=a;const remove=document.createElement('button');remove.className='remove';remove.type='button';remove.setAttribute('aria-label','Remove '+a);remove.textContent='×';remove.addEventListener('click',()=>{addresses.splice(i,1);persist();render();status('Stop removed.','ok')});row.append(n,text,remove);root.append(row)})}
+ function addAddress(raw){const address=normal(raw||'');if(!address){status('Nothing to add. Copy an address or paste it into the text box.','warn');return false}if(address.length>350){status('This looks longer than a single address. Please paste just one address at a time.','warn');return false}if(addresses.some(x=>normKey(x)===normKey(address))){status('That address is already on the list. Nothing was duplicated.','warn');return false}addresses.push(address);persist();render();$('manual').value='';status(`Added stop ${addresses.length}: ${address}`,'ok');return true}
+ $('paste').addEventListener('click',async()=>{if(!navigator.clipboard?.readText){status('Clipboard read is unavailable in this browser or page context. Long-press the text box, choose Paste, then tap Add address.','warn');$('manual').focus();return}try{const txt=await navigator.clipboard.readText();addAddress(txt)}catch(e){status('Clipboard permission was blocked or not available here. Long-press the text box, choose Paste, then tap Add address. For one-tap clipboard reading, host this page on HTTPS.','warn');$('manual').focus()}});
+ $('add').addEventListener('click',()=>addAddress($('manual').value));
+ $('clear').addEventListener('click',()=>{if(!addresses.length)return;if(confirm('Remove all delivery addresses from this device?')){addresses=[];persist();render();status('All stops cleared.','ok')}});
+ $('copy').addEventListener('click',async()=>{if(!addresses.length){status('No addresses to copy yet.','warn');return}const txt=addresses.join('\n');try{await navigator.clipboard.writeText(txt);status('Full address list copied.','ok')}catch(_){$('manual').value=txt;$('manual').focus();$('manual').select();status('Could not copy automatically. The full list is selected in the text box for manual copying.','warn')}});
+ render();
+})();
+</script></body></html>
