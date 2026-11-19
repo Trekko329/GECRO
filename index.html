@@ -2,7 +2,7 @@
 <html lang="en-AU">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#101a2b"><title>GECRO Driver | v0.10 Priority Routes</title>
+<meta name="theme-color" content="#101a2b"><title>GECRO Driver | v0.11 One-Screen Run</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 <style>
 :root{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#eaf1fb;background:#0b1321;color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:linear-gradient(155deg,#111f36,#0b1321 45%);padding:env(safe-area-inset-top) 16px env(safe-area-inset-bottom)}main{max-width:590px;margin:auto;padding:22px 0 45px}h1{font-size:27px;letter-spacing:-.8px;margin:0}.sub{color:#9aabc3;font-size:13px;margin:4px 0 0}.top,.between{display:flex;align-items:center;justify-content:space-between;gap:10px}.pill{font-size:11px;border:1px solid #47657e;color:#a7dcf2;border-radius:40px;padding:7px 10px;white-space:nowrap}.panel{background:#16243a;border:1px solid #304059;border-radius:19px;padding:17px;margin:13px 0;box-shadow:0 7px 28px #0002}h2{margin:0 0 12px;font-size:17px}p{line-height:1.5}.muted,.small{color:#a8b6c9;font-size:13px}.small{font-size:12px}.steps{font-size:13px;color:#b9c8db;line-height:1.7;margin:0;padding-left:22px}.primary,.secondary,.danger,.quiet{font:inherit;font-size:14px;font-weight:700;cursor:pointer;border-radius:12px;padding:12px 13px;min-height:44px}.primary{background:#32b8e2;border:1px solid #32b8e2;color:#081625}.secondary{background:#23334c;border:1px solid #4d6684;color:#f0f6fe}.danger{background:transparent;border:1px solid #7d4554;color:#ffbac2}.quiet{background:transparent;border:1px solid #506c8d;color:#d3eaff}.primary:disabled,.secondary:disabled{opacity:.45;cursor:default}.full{width:100%}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.input{background:#0d1a2d;border:1px solid #55708f;color:#fff;border-radius:12px;padding:12px;font:inherit;font-size:16px;width:100%;min-height:47px;outline-offset:3px}.input:focus{outline:2px solid #3abde6}textarea.input{min-height:75px;resize:vertical}.status{padding:11px 13px;border-radius:12px;background:#203047;color:#c9d8e9;font-size:13px;line-height:1.5;margin-top:12px;white-space:pre-line}.status.ok{background:#123d37;color:#a1f3d3}.status.warn{background:#4a3420;color:#ffe0aa}.status.err{background:#4b2530;color:#ffd0d8}.stop{display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #304059}.stop:last-child{border-bottom:0}.num{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;background:#263c58;color:#acd8fa;font-weight:750;flex:0 0 30px}.address{font-size:14px;line-height:1.4;flex:1;min-width:0;overflow-wrap:anywhere}.remove{background:transparent;border:1px solid #4b607b;border-radius:9px;color:#c6d6e9;width:34px;height:34px;font-size:19px;cursor:pointer}.count{font-size:13px;color:#a7b9d2}.footer{font-size:12px;line-height:1.65;color:#94a9c3;margin-top:17px}a{color:#8adfff}.gap{height:10px}.hidden{display:none!important}.radio-row{display:flex;gap:8px;align-items:center;margin:11px 0;font-size:14px}.radio-row input{accent-color:#32b8e2}.route-item{background:#0d1a2d;border:1px solid #324b66;border-radius:12px;padding:13px;margin-top:9px}.route-item.next{border:2px solid #42cbe7;background:#143348}.route-item.next strong{font-size:17px}.progress{margin:12px 0;padding:13px;background:#102e35;border:1px solid #367d86;border-radius:12px}.progress strong{display:block;font-size:16px}.progress small{display:block;color:#b9d2d5;margin-top:4px}.progress .bar{height:6px;border-radius:6px;background:#34525b;overflow:hidden;margin-top:9px}.progress .bar span{display:block;height:100%;background:#38c8dd}.route-item.done{opacity:.6}.route-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.route-actions button,.route-actions a{flex:1;text-decoration:none;text-align:center}.route-actions a{display:inline-flex;align-items:center;justify-content:center}.label{color:#a8b6c9;font-size:12px;margin:0 0 6px}.verified{color:#8dcbb9;font-size:12px;margin-top:4px;overflow-wrap:anywhere}.review-item{border:1px solid #4a6079;border-radius:12px;padding:12px;margin:9px 0;background:#101e31}.review-item strong{font-size:13px}.review-item a{font-size:12px}.review-item label{display:flex;align-items:flex-start;gap:9px;line-height:1.4;margin-top:8px;font-size:13px}.review-item input{width:20px;height:20px;accent-color:#36c6e8;flex-shrink:0}.review-item .mapmatch{overflow-wrap:anywhere;color:#94d6bd;font-size:12px;margin:6px 0}.notice{background:#342d24;border:1px solid #725d3b;border-radius:12px;padding:11px 13px;color:#f9dfa8;font-size:12px;line-height:1.5}.row-gap{margin-top:10px}button:focus-visible,a:focus-visible{outline:3px solid #f7df75;outline-offset:3px}
@@ -38,20 +38,89 @@
 .metric span{font-size:12px;color:#abc4d8}
 .route-item:focus-within{outline:1px solid #4dcbea}
 @media(max-width:390px){.map-head{align-items:flex-start;flex-direction:column}.map-controls{justify-content:flex-start}}
+
+/* v0.11: one-screen run dashboard and mobile-first drag-and-drop */
+main{max-width:660px;padding-top:15px}
+.panel.run-panel{margin-top:10px;padding:14px}
+.run-heading{margin:0 0 8px}
+.run-heading h2{margin:0}
+.run-top-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.run-top-actions button{min-width:0}
+#entryArea{padding:12px;background:#0e1b2e;border:1px solid #39516c;border-radius:12px;margin:8px 0}
+#entryArea textarea{min-height:60px}
+#status{padding:8px 11px;font-size:12px;margin:8px 0}
+#routeStatus{margin:8px 0;padding:9px 11px}
+#routeProgress{margin:10px 0}
+.route-metrics{margin:8px 0 10px}
+.stop-list-title{font-size:14px;font-weight:700;margin:16px 0 6px}
+#stops{display:grid;gap:7px}
+.stop-row{display:flex;align-items:flex-start;gap:8px;background:#0e1e31;border:1px solid #3b526e;border-radius:12px;padding:9px;position:relative;min-width:0}
+.stop-row.next{background:#13374b;border-color:#3ac1df;box-shadow:inset 3px 0 0 #3ac1df}
+.stop-row.priority-stop{border-left:3px solid #deb04c}
+.stop-row.dragging{opacity:.85;z-index:20;pointer-events:none;box-shadow:0 12px 30px #0009;border-color:#4ed2ee;background:#233d56;transition:none}
+.stop-row.drag-before::before,.stop-row.drag-after::after{content:"";position:absolute;left:5px;right:5px;height:4px;background:#50d9ed;border-radius:4px;z-index:25}
+.stop-row.drag-before::before{top:-7px}.stop-row.drag-after::after{bottom:-7px}
+.stop-row .num{width:29px;height:29px;flex:0 0 29px}
+.drag-handle{width:32px;min-height:47px;flex:0 0 32px;border:1px solid #526985;border-radius:9px;background:#20344c;color:#cde8ff;font-size:20px;line-height:1;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;padding:4px}
+.drag-handle:active{cursor:grabbing}
+.stop-row-body{flex:1;min-width:0}
+.stop-row-top{display:flex;align-items:flex-start;gap:7px}
+.stop-row .address{font-size:14px;font-weight:600;line-height:1.3;flex:1;min-width:0}
+.stop-row .stop-check{width:24px;height:24px;flex:0 0 24px;accent-color:#32b8e2;cursor:pointer;margin:2px 0 0}
+.stop-row .stop-detail{font-size:11px;color:#9db4d0;margin:5px 0 2px;overflow-wrap:anywhere}
+.stop-row .stop-actions{display:flex;align-items:center;flex-wrap:wrap;gap:5px;margin-top:7px}
+.stop-row .stop-actions button,.stop-row .stop-actions a{display:inline-flex;align-items:center;justify-content:center;text-align:center;min-height:34px;border-radius:8px;padding:6px 8px;font-size:12px;text-decoration:none;flex:0 0 auto}
+.stop-row .stop-actions .priority-btn{min-height:34px}
+.stop-row .stop-actions .remove{width:34px;height:34px;font-size:18px;padding:4px}
+.stop-row .stop-actions .secondary{padding:6px 9px}
+.stop-row .stop-actions a.primary{color:#071523}
+#completedSection{margin-top:10px;border-top:1px solid #354b67;padding-top:9px}
+#completedSection summary{color:#b8cde5;font-size:13px;font-weight:700;cursor:pointer;padding:6px 0}
+#completedStops{display:grid;gap:6px;margin-top:6px}
+#completedStops .stop-row{opacity:.76}
+#completedStops .stop-row .address{text-decoration:line-through}
+#result{margin-top:12px}
+#comparison{margin:10px 0}
+.route-note{margin:8px 0;font-size:12px}
+.map-head{margin:13px 0 8px}
+#routeMap{height:310px}
+.run-tools{margin-top:10px}
+.run-tools .secondary,.run-tools .danger{min-height:40px}
+.setup-panel{padding:12px 15px}
+.setup-panel summary{cursor:pointer;font-weight:700;list-style-position:inside}
+.setup-panel .small{margin:7px 0}
+.notice.compact{font-size:11px;padding:8px 11px;line-height:1.35}
+#reopenHelp{margin:10px 0 4px}
+@media(max-width:390px){.stop-row{gap:5px;padding:7px}.stop-row .num{width:25px;flex-basis:25px;height:25px}.drag-handle{flex-basis:28px;width:28px}.stop-row .stop-actions button,.stop-row .stop-actions a{font-size:11px;padding:6px}.run-top-actions button{font-size:12px;padding:10px 6px}}
 </style>
 </head>
 <body><main>
-<header class="top"><div><h1>GECRO <span style="color:#4dcbea">Driver</span></h1><p class="sub">Route optimisation test · v0.10</p></div><span class="pill">🚚 Open route</span></header>
-<div class="notice"><strong>Prototype testing only.</strong> Public OpenStreetMap geocoding and OSRM demonstration routing services are used. Match confirmation, delivery reopening, Undo, saved route progress, and an interactive route map are included for testing. They have usage restrictions and are not approved as a production courier service. Test with public or dummy addresses only, not customer details. Results are estimates without live traffic.</div>
-<section class="panel"><h2>1. Add your stops</h2><p class="muted">In HUB Mobile, copy one address at a time. Come back here and use Paste &amp; Add, or paste into the field below.</p><button class="primary full" id="paste">📋 Paste &amp; Add from clipboard</button><p class="small" style="margin-bottom:6px">Manual paste fallback</p><textarea class="input" id="manual" placeholder="One street address, e.g. 30 Gheringhap St, Geelong VIC" aria-label="Delivery address"></textarea><div class="gap"></div><button class="secondary full" id="add">＋ Add address from text box</button><div class="status" id="status" role="status" aria-live="polite">Ready to add addresses.</div></section>
-<section class="panel"><div class="between"><h2>Your outstanding stops</h2><span class="count" id="count">0 stops</span></div><div id="stops"></div><p class="small" id="reopenHelp">Completed stops have a checked box. Untick to reopen. Mark any outstanding stop ★ Priority to have optimisation place it before ordinary stops.</p><div class="grid row-gap"><button class="secondary" id="copy">Copy list</button><button class="danger" id="clear">Clear all</button></div><button class="secondary full row-gap" id="undo" disabled>↶ Undo last change</button></section>
-<section class="panel"><h2>2. Choose where you start</h2><label class="radio-row"><input type="radio" name="startmode" value="gps" checked>📍 My phone's GPS location</label><label class="radio-row"><input type="radio" name="startmode" value="manual">⌨️ Enter starting address instead</label><div id="manualStartWrap" class="hidden"><label class="small" for="manualStart">Starting street address</label><input class="input" id="manualStart" placeholder="e.g. 30 Gheringhap St, Geelong VIC"></div><p class="small">Your GPS is requested only when you press Optimise. Location coordinates aren't saved. Enable location permissions in your browser if asked.</p></section>
-<section class="panel"><h2>3. Calculate your fastest route</h2><button class="primary full" id="optimise">🧭 Optimise remaining stops</button><div class="status" id="routeStatus" role="status" aria-live="polite">Enter at least one address and choose your start location.</div><div id="review" class="hidden"><h2 class="row-gap">Check the address matches</h2><p class="small">The location finder can select the wrong street. Check each match against the address from HUB before using the route. Tap View map when uncertain.</p><div id="reviewItems"></div><button class="primary full row-gap" id="confirm" disabled>✓ Confirm all matches &amp; show route</button></div><div id="result" class="hidden"><div class="between row-gap"><h2>Suggested stop order</h2><span class="count" id="duration"></span></div><p class="small" id="comparison"></p><p class="route-note" id="routeControlHint">Use ↑ and ↓ on a stop to adjust the order. ★ Priority places a stop ahead of ordinary stops when optimising.</p><div id="routeProgress" class="progress"></div>
-<div class="route-metrics" id="routeMetrics" aria-label="Estimated route summary"></div>
-<div class="map-head"><h3>🗺️ Your delivery route</h3><div class="map-controls"><button type="button" class="secondary" id="nextMap">Show next stop</button><button type="button" class="secondary" id="fitMap">Fit all stops</button><button type="button" class="secondary" id="toggleMap" aria-expanded="true" aria-controls="routeMapArea">Hide map</button></div></div>
-<div id="routeMapArea"><div id="routeMap" role="region" aria-label="Interactive route map with numbered delivery locations"></div>
-<div class="map-help" id="mapStatus" role="status" aria-live="polite">Confirmed stops will appear here.</div></div>
-<div id="route"></div><button class="secondary full row-gap" id="recalc">↻ Recalculate from my current location</button></div></section>
+<header class="top"><div><h1>GECRO <span style="color:#4dcbea">Driver</span></h1><p class="sub">One-screen delivery run · v0.11</p></div><span class="pill">🚚 Open route</span></header>
+<details class="notice compact"><summary><strong>Prototype testing only · public addresses</strong></summary>Public OpenStreetMap lookup and OSRM demo routing services are not suitable for commercial fleet deployment. Use dummy or publicly listed addresses only. Check all map matches. Estimates exclude live traffic and unloading.</details>
+<section class="panel run-panel" id="runPanel">
+  <div class="between run-heading"><h2>My delivery run</h2><span class="count" id="count">0 stops</span></div>
+  <div id="routeProgress" class="progress hidden"></div>
+  <div class="route-metrics hidden" id="routeMetrics" aria-label="Estimated route summary"></div>
+  <div class="run-top-actions"><button class="primary" id="paste">📋 Paste &amp; Add</button><button class="secondary" id="toggleEntry" aria-expanded="false" aria-controls="entryArea">⌨ Type an address</button></div>
+  <div id="entryArea" class="hidden"><label for="manual" class="small">Manually paste one street address</label><textarea class="input" id="manual" placeholder="e.g. 30 Gheringhap St, Geelong VIC" aria-label="Delivery address"></textarea><button class="secondary full row-gap" id="add">＋ Add address from text box</button></div>
+  <div class="status hidden" id="status" role="status" aria-live="polite">Ready to add addresses.</div>
+  <button class="primary full row-gap" id="optimise">🧭 Optimise remaining stops</button>
+  <div class="status" id="routeStatus" role="status" aria-live="polite">Add addresses, then optimise from your GPS position.</div>
+  <div id="review" class="hidden"><h2 class="row-gap">Check the address matches</h2><p class="small">Confirm each location against the original HUB address before using the route.</p><div id="reviewItems"></div><button class="primary full row-gap" id="confirm" disabled>✓ Confirm all matches &amp; show route</button></div>
+  <div class="between"><div class="stop-list-title">Outstanding stops <span id="stopOrderLabel" class="small">· Added order</span></div></div>
+  <div id="stops" aria-label="Outstanding delivery stops, drag the handles to reorder"></div>
+  <p class="small" id="reopenHelp">Drag the ⠿ handle to reorder stops. Use ★ for priority. Tick a completed delivery, or expand Completed to untick it.</p>
+  <details id="completedSection" class="hidden"><summary id="completedSummary">Completed (0) · tap to reopen</summary><div id="completedStops"></div></details>
+  <div id="result" class="hidden">
+    <p class="small" id="comparison"></p>
+    <div class="map-head"><h3>🗺️ Route map</h3><div class="map-controls"><button type="button" class="secondary" id="nextMap">Next stop</button><button type="button" class="secondary" id="fitMap">Fit route</button><button type="button" class="secondary" id="toggleMap" aria-expanded="true" aria-controls="routeMapArea">Hide map</button></div></div>
+    <div id="routeMapArea"><div id="routeMap" role="region" aria-label="Interactive route map with numbered delivery locations"></div><div class="map-help" id="mapStatus" role="status" aria-live="polite">Confirmed stops will appear here.</div></div>
+    
+  </div>
+  <div class="grid run-tools"><button class="secondary" id="copy">Copy list</button><button class="danger" id="clear">Clear all</button></div>
+  <button class="secondary full row-gap" id="undo" disabled>↶ Undo last change</button>
+</section>
+<section class="panel setup-panel"><details id="startSettings"><summary>📍 Starting location: phone GPS (tap to change)</summary><label class="radio-row"><input type="radio" name="startmode" value="gps" checked>📍 My phone's GPS location</label><label class="radio-row"><input type="radio" name="startmode" value="manual">⌨️ Enter starting address instead</label><div id="manualStartWrap" class="hidden"><label class="small" for="manualStart">Starting street address</label><input class="input" id="manualStart" placeholder="e.g. 30 Gheringhap St, Geelong VIC"></div><p class="small">GPS is requested only when you optimise. Coordinates are not saved.</p></details></section>
 <p class="footer">Addresses and completed-state selections are saved only on this browser/device. Street address matching is supplied by © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> through Nominatim, subject to its <a href="https://operations.osmfoundation.org/policies/nominatim/" target="_blank" rel="noopener">usage policy</a>. Routing estimates use a public OSRM demonstration server. Both services receive queries during optimisation. They can be unavailable or return incorrect matches. Check each matched location and follow road signs, road rules and despatch instructions. Do not use the phone while driving.</p>
 </main>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -60,31 +129,128 @@
 const KEY='gecro-driver-addresses-v03', DONEKEY='gecro-driver-done-v04', GEOKEY='gecro-driver-geocache-v04', ROUTEKEY='gecro-driver-confirmed-route-v06', PRIORITYKEY='gecro-driver-priorities-v10';
 const $=id=>document.getElementById(id);let addresses=[],done=new Set(),priorities=new Set(),routeOrder=[],matched=new Map(),busy=false,geoCache={},undoState=null,pendingRoute=null;
 let leafletMap=null, leafletPins=null, leafletLine=null, mapLoadId=0, mapSignature="", mapBounds=null, mapStopMarkers=[];
-const MAPKEY='gecro-driver-map-visible-v09';let mapVisible=true;
-try{mapVisible=localStorage.getItem(MAPKEY)!=='hidden'}catch(_){}
+const MAPKEY='gecro-driver-map-visible-v09';let mapVisible=false;
+try{mapVisible=localStorage.getItem(MAPKEY)==='shown'}catch(_){}
 try{const v=JSON.parse(localStorage.getItem(KEY)||'[]');if(Array.isArray(v))addresses=v.filter(x=>typeof x==='string').slice(0,100)}catch(_){}
 try{const v=JSON.parse(localStorage.getItem(DONEKEY)||'[]');if(Array.isArray(v))done=new Set(v.filter(x=>typeof x==='string'))}catch(_){}
 try{const v=JSON.parse(localStorage.getItem(PRIORITYKEY)||'[]');if(Array.isArray(v))priorities=new Set(v.filter(x=>typeof x==='string'))}catch(_){}
 try{geoCache=JSON.parse(localStorage.getItem(GEOKEY)||'{}')||{}}catch(_){}
 const normal=s=>String(s||'').trim().replace(/\s+/g,' ');const normKey=s=>normal(s).toLocaleLowerCase('en-AU').replace(/[.,]/g,'');const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-function notify(id,message,type=''){const e=$(id);e.textContent=message;e.className='status '+type}
+function notify(id,message,type=''){const e=$(id);e.textContent=message;e.className='status '+type;if(id==='status')e.classList.remove('hidden')}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(addresses));localStorage.setItem(DONEKEY,JSON.stringify([...done]));localStorage.setItem(GEOKEY,JSON.stringify(geoCache));localStorage.setItem(PRIORITYKEY,JSON.stringify([...priorities]))}catch(_){notify('status','Browser storage is unavailable. Keep this page open.','warn')}}
-function invalidate(){mapLoadId++;mapSignature="";clearRouteMap();try{localStorage.removeItem(ROUTEKEY)}catch(_){}pendingRoute=null;$('review').classList.add('hidden');routeOrder=[];matched.clear();$('result').classList.add('hidden');notify('routeStatus','Stop list changed. Optimise again when ready.','warn')}
+function invalidate(){mapLoadId++;mapSignature="";clearRouteMap();try{localStorage.removeItem(ROUTEKEY)}catch(_){}pendingRoute=null;$('review').classList.add('hidden');routeOrder=[];matched.clear();$('result').classList.add('hidden');$('routeProgress').classList.add('hidden');$('routeMetrics').classList.add('hidden');$('optimise').textContent='🧭 Optimise remaining stops';notify('routeStatus','Stop list changed. Optimise again when ready.','warn')}
 function snapshot(){undoState={addresses:[...addresses],done:[...done],priorities:[...priorities],route:pendingRoute?JSON.parse(JSON.stringify(pendingRoute)):null};$('undo').disabled=false}
 $('undo').onclick=()=>{if(!undoState)return;const prior=undoState;addresses=prior.addresses;done=new Set(prior.done);priorities=new Set(prior.priorities||[]);undoState=null;$('undo').disabled=true;save();invalidate();if(prior.route){pendingRoute=prior.route;persistRoute();renderRoute(prior.route.order,prior.route.stops,prior.route.geos,prior.route.matrix);notify('routeStatus','Previous route restored. Recalculate if your position has changed.','ok')}renderStops();notify('status','Last change undone.','ok')};
-function renderStops(){const root=$('stops');root.replaceChildren();$('count').textContent=`${addresses.filter(a=>!done.has(normKey(a))).length} outstanding / ${addresses.length} total`;
-if(!addresses.length){const p=document.createElement('p');p.className='muted';p.textContent='No addresses added yet.';root.append(p)}
-addresses.forEach((a,i)=>{const row=document.createElement('div');row.className='stop';const n=document.createElement('div');n.className='num';n.textContent=done.has(normKey(a))?'✓':i+1;const txt=document.createElement('div');txt.className='address';txt.textContent=a;if(done.has(normKey(a))){txt.style.textDecoration='line-through';txt.style.opacity='.65'};
-const toggle=document.createElement('input');toggle.type='checkbox';toggle.checked=done.has(normKey(a));toggle.disabled=busy;toggle.title=toggle.checked?'Untick to reopen delivery':'Tick to mark delivery complete';toggle.setAttribute('aria-label',(toggle.checked?'Reopen completed delivery: ':'Mark delivery complete: ')+a);toggle.style.cssText='width:22px;height:22px;flex:0 0 22px;accent-color:#32b8e2;cursor:pointer';
-toggle.onchange=()=>{const key=normKey(a);if(!toggle.checked){const previous=undoState?.route;const canRestore=previous&&undoState.addresses.length===addresses.length&&undoState.addresses.every((v,j)=>normKey(v)===normKey(addresses[j]))&&!undoState.done.includes(key)&&previous.stops.includes(a);snapshot();done.delete(key);save();if(canRestore){pendingRoute=previous;persistRoute();renderRoute(previous.order,previous.stops,previous.geos,previous.matrix);notify('routeStatus','Delivery reopened and its previous route position restored. Recalculate if you have moved.','ok')}else{invalidate();notify('routeStatus','Delivery reopened. Reoptimise the outstanding stops to include it in a new fastest route.','warn')}notify('status',`Reopened: ${a}`,'ok')}else{snapshot();done.add(key);save();const idx=pendingRoute?.stops.findIndex(v=>normKey(v)===key)??-1;if(idx>=0){advanceRoute(idx)}else{invalidate()}notify('status',`Completed: ${a}`,'ok')}renderStops()};
-const priority=document.createElement('button');priority.type='button';priority.className='priority-btn'+(priorities.has(normKey(a))?' active':'');priority.textContent=priorities.has(normKey(a))?'★ Priority':'☆ Priority';priority.disabled=busy||done.has(normKey(a));priority.setAttribute('aria-label',(priorities.has(normKey(a))?'Remove priority from ':'Prioritise ')+a);priority.onclick=()=>togglePriority(a);
-const edit=document.createElement('button');edit.className='remove';edit.textContent='✎';edit.title='Edit address';edit.setAttribute('aria-label','Edit '+a);edit.disabled=busy;edit.onclick=()=>{const updated=prompt('Correct this address:',a);if(updated===null)return;const value=normal(updated);if(!value||value.length>350){notify('status','Enter one valid address.','warn');return}if(addresses.some((v,j)=>j!==i&&normKey(v)===normKey(value))){notify('status','That address is already listed.','warn');return}snapshot();if(priorities.delete(normKey(a)))priorities.add(normKey(value));addresses[i]=value;done.delete(normKey(a));save();invalidate();renderStops()};const remove=document.createElement('button');remove.className='remove';remove.textContent='×';remove.title='Remove address';remove.setAttribute('aria-label','Remove '+a);remove.disabled=busy;remove.onclick=()=>{snapshot();addresses.splice(i,1);done.delete(normKey(a));priorities.delete(normKey(a));save();invalidate();renderStops()};row.append(n,toggle,txt,priority,edit,remove);root.append(row)})}
+function listedOutstanding(){
+ const all=addresses.filter(a=>!done.has(normKey(a)));
+ if(!pendingRoute||!Array.isArray(pendingRoute.order))return all;
+ const ranked=pendingRoute.order.map(i=>pendingRoute.stops[i]).filter(a=>all.some(v=>normKey(v)===normKey(a)));
+ return [...ranked,...all.filter(a=>!ranked.some(v=>normKey(v)===normKey(a)))];
+}
+function renderStops(){
+ const root=$('stops'),completedRoot=$('completedStops');root.replaceChildren();completedRoot.replaceChildren();
+ const outstanding=listedOutstanding(),completed=addresses.filter(a=>done.has(normKey(a)));
+ $('count').textContent=`${outstanding.length} left / ${addresses.length} total`;
+ $('stopOrderLabel').textContent=pendingRoute?'· '+(pendingRoute.mode==='manual'?'Manual order':pendingRoute.mode==='priority-adjusted'?'Priority order':'Optimised order'):'· Added order';
+ $('completedSection').classList.toggle('hidden',!completed.length);
+ $('completedSummary').textContent=`Completed (${completed.length}) · tap to reopen`;
+ if(!outstanding.length){const p=document.createElement('p');p.className='muted';p.textContent=completed.length?'All stops completed. Well done!':'No addresses added yet. Copy one from HUB and tap Paste & Add.';root.append(p)}
+ function oneRow(a,pos,isDone){
+  const key=normKey(a),idx=addresses.findIndex(v=>normKey(v)===key),routeIdx=pendingRoute?.stops.findIndex(v=>normKey(v)===key)??-1;
+  const row=document.createElement('div');row.className='stop-row'+(!isDone&&pos===0&&pendingRoute?' next':'')+(!isDone&&priorities.has(key)?' priority-stop':'');row.dataset.key=key;
+  if(!isDone){const handle=document.createElement('button');handle.type='button';handle.className='drag-handle';handle.textContent='⠿';handle.title='Drag to reorder; keyboard Arrow Up or Arrow Down';handle.disabled=busy;handle.setAttribute('aria-label',`Reorder ${a}: drag, or use arrow keys`);handle.addEventListener('pointerdown',e=>startDrag(e,row,a,handle));handle.addEventListener('keydown',e=>{if(e.key==='ArrowUp'||e.key==='ArrowDown'){e.preventDefault();reorderAddress(a,Math.max(0,Math.min(listedOutstanding().length-1,listedOutstanding().findIndex(v=>normKey(v)===key)+(e.key==='ArrowUp'?-1:1))))}});row.append(handle)}
+  const number=document.createElement('span');number.className='num';number.textContent=isDone?'✓':pos+1;row.append(number);
+  const body=document.createElement('div');body.className='stop-row-body';const top=document.createElement('div');top.className='stop-row-top';
+  const txt=document.createElement('div');txt.className='address';txt.textContent=a;top.append(txt);
+  const check=document.createElement('input');check.type='checkbox';check.className='stop-check';check.checked=isDone;check.disabled=busy;check.title=isDone?'Untick to reopen delivery':'Tick when delivery is completed';check.setAttribute('aria-label',(isDone?'Reopen completed delivery: ':'Mark completed: ')+a);check.onchange=()=>setStopCompleted(a,check.checked);top.append(check);body.append(top);
+  if(!isDone&&pendingRoute&&routeIdx>=0){
+   const routePos=pendingRoute.order.indexOf(routeIdx);const secs=pendingRoute.order.slice(0,routePos+1).reduce((acc,id,i)=>acc+pendingRoute.matrix[i?pendingRoute.order[i-1]+1:0][id+1],0);
+   const detail=document.createElement('div');detail.className='stop-detail';detail.textContent=(routePos===0?'NEXT DELIVERY · ':'')+`~${fmtSecs(secs)} from route start`+(priorities.has(key)?' · ★ Priority':'');body.append(detail);
+  }else if(!isDone&&priorities.has(key)){const detail=document.createElement('div');detail.className='priority-label';detail.textContent='★ Priority';body.append(detail)}
+  const actions=document.createElement('div');actions.className='stop-actions';
+  if(!isDone){
+   const priority=document.createElement('button');priority.type='button';priority.className='priority-btn'+(priorities.has(key)?' active':'');priority.textContent=priorities.has(key)?'★ Priority':'☆ Priority';priority.disabled=busy;priority.setAttribute('aria-label',(priorities.has(key)?'Remove priority from ':'Prioritise ')+a);priority.onclick=()=>togglePriority(a);actions.append(priority);
+   if(pendingRoute&&routeIdx>=0){const focus=document.createElement('button');focus.type='button';focus.className='secondary';focus.textContent='◎ Map';focus.disabled=busy;focus.setAttribute('aria-label',`Show stop ${pos+1} on map: ${a}`);focus.onclick=()=>mapFocusStop(pos);const nav=document.createElement('a');nav.className='primary';nav.href=mapsLink(a);nav.target='_blank';nav.rel='noopener';nav.textContent=pos===0?'↗ Navigate next':'↗ Navigate';actions.append(focus,nav)}
+   const edit=document.createElement('button');edit.type='button';edit.className='remove';edit.textContent='✎';edit.title='Edit address';edit.disabled=busy;edit.setAttribute('aria-label','Edit '+a);edit.onclick=()=>{const updated=prompt('Correct this address:',a);if(updated===null)return;const value=normal(updated);if(!value||value.length>350){notify('status','Enter one valid address.','warn');return}if(addresses.some((v,j)=>j!==idx&&normKey(v)===normKey(value))){notify('status','That address is already listed.','warn');return}snapshot();if(priorities.delete(key))priorities.add(normKey(value));addresses[idx]=value;done.delete(key);save();invalidate();renderStops()};actions.append(edit);
+   const remove=document.createElement('button');remove.type='button';remove.className='remove';remove.textContent='×';remove.title='Remove address';remove.disabled=busy;remove.setAttribute('aria-label','Remove '+a);remove.onclick=()=>{snapshot();addresses.splice(idx,1);done.delete(key);priorities.delete(key);save();invalidate();renderStops()};actions.append(remove);
+  }
+  body.append(actions);row.append(body);return row;
+ }
+ outstanding.forEach((a,i)=>root.append(oneRow(a,i,false)));
+ completed.forEach((a,i)=>completedRoot.append(oneRow(a,i,true)));
+}
+function setStopCompleted(a,markDone){
+ const key=normKey(a);
+ if(!markDone){
+  const previous=undoState?.route;
+  const canRestore=previous&&undoState.addresses.length===addresses.length&&undoState.addresses.every((v,j)=>normKey(v)===normKey(addresses[j]))&&!undoState.done.includes(key)&&previous.stops.includes(a);
+  snapshot();done.delete(key);save();
+  if(canRestore){pendingRoute=previous;persistRoute();renderRoute(previous.order,previous.stops,previous.geos,previous.matrix);notify('routeStatus','Delivery reopened in its previous route position. Recalculate if you have moved.','ok')}
+  else{invalidate();notify('routeStatus','Delivery reopened. Reoptimise to include the restored stop.','warn')}
+  notify('status',`Reopened: ${a}`,'ok');
+ }else{
+  snapshot();done.add(key);save();const idx=pendingRoute?.stops.findIndex(v=>normKey(v)===key)??-1;
+  if(idx>=0)advanceRoute(idx);else invalidate();notify('status',`Completed: ${a}`,'ok');
+ }
+ renderStops();
+}
+/* Manual changes operate on the existing saved time matrix; no new geocoding is needed. */
+function reorderAddress(address,to){
+ if(busy)return;
+ const current=listedOutstanding(),from=current.findIndex(a=>normKey(a)===normKey(address));
+ if(from<0||to<0||to>=current.length||from===to)return;
+ snapshot();const changed=[...current],moved=changed.splice(from,1)[0];changed.splice(to,0,moved);
+ addresses=[...changed,...addresses.filter(a=>done.has(normKey(a)))];save();
+ if(pendingRoute){
+  const order=changed.map(a=>pendingRoute.stops.findIndex(v=>normKey(v)===normKey(a)));
+  if(order.some(i=>i<0)){invalidate();notify('routeStatus','Stop list changed. Optimise again to update estimates.','warn');renderStops();return}
+  pendingRoute={...pendingRoute,order,mode:'manual'};
+  applyLocalRouteChange('Stop order updated. Driving time and the map reflect the manual route. Optimise again to restore the fastest priority-aware route.');
+ }else{renderStops();notify('status','Stop order changed. Press Optimise when ready.','ok')}
+}
+let activeDrag=null;
+function dragTarget(y){
+ if(!activeDrag)return;
+ const others=[...$('stops').querySelectorAll('.stop-row')].filter(row=>row!==activeDrag.row);
+ const index=others.findIndex(row=>y<row.getBoundingClientRect().top+row.getBoundingClientRect().height/2);
+ const target=index<0?others.length:index;
+ others.forEach(row=>row.classList.remove('drag-before','drag-after'));
+ if(others.length){const marker=others[Math.min(target,others.length-1)];marker.classList.add(target===others.length?'drag-after':'drag-before')}
+ activeDrag.target=target;
+}
+function finishDrag(commit){
+ const drag=activeDrag;if(!drag)return;activeDrag=null;
+ if(drag.raf)cancelAnimationFrame(drag.raf);
+ drag.handle.removeEventListener('pointermove',drag.move);
+ drag.handle.removeEventListener('pointerup',drag.up);
+ drag.handle.removeEventListener('pointercancel',drag.cancel);
+ drag.row.style.transform='';drag.row.classList.remove('dragging');
+ $('stops').querySelectorAll('.drag-before,.drag-after').forEach(el=>el.classList.remove('drag-before','drag-after'));
+ try{if(drag.handle.hasPointerCapture(drag.id))drag.handle.releasePointerCapture(drag.id)}catch(_){}
+ if(commit&&drag.moved)reorderAddress(drag.address,drag.target);
+}
+function startDrag(e,row,address,handle){
+ if(busy||activeDrag||(e.pointerType==='mouse'&&e.button!==0))return;
+ e.preventDefault();const startY=e.clientY;
+ const drag={row,address,handle,id:e.pointerId,startY,y:startY,target:listedOutstanding().findIndex(a=>normKey(a)===normKey(address)),moved:false,raf:0};activeDrag=drag;
+ handle.setPointerCapture(e.pointerId);
+ drag.move=ev=>{if(ev.pointerId!==drag.id)return;drag.y=ev.clientY;if(Math.abs(drag.y-startY)>=6)drag.moved=true;if(drag.moved){row.classList.add('dragging');row.style.transform=`translateY(${drag.y-startY}px)`;dragTarget(drag.y)}};
+ drag.up=ev=>{if(ev.pointerId===drag.id)finishDrag(true)};
+ drag.cancel=ev=>{if(ev.pointerId===drag.id)finishDrag(false)};
+ handle.addEventListener('pointermove',drag.move);handle.addEventListener('pointerup',drag.up);handle.addEventListener('pointercancel',drag.cancel);
+ const autoScroll=()=>{if(activeDrag!==drag)return;
+  if(drag.moved){const band=80,step=12;let velocity=drag.y<band?-step:drag.y>window.innerHeight-band?step:0;
+   if(velocity){window.scrollBy(0,velocity);dragTarget(drag.y)}}
+  drag.raf=requestAnimationFrame(autoScroll)};
+ drag.raf=requestAnimationFrame(autoScroll);
+}
 function addAddress(raw){const value=normal(raw);if(!value){notify('status','Copy or paste one address first.','warn');return}if(value.length>350||value.includes('\n')){notify('status','Please add only one street address at a time.','warn');return}if(addresses.some(a=>normKey(a)===normKey(value))){notify('status','Already listed, so no duplicate was added.','warn');return}snapshot();addresses.push(value);save();invalidate();renderStops();$('manual').value='';notify('status',`Address added: ${value}`,'ok')}
+$('toggleEntry').onclick=()=>{const open=$('entryArea').classList.toggle('hidden')===false;$('toggleEntry').setAttribute('aria-expanded',String(open));$('toggleEntry').textContent=open?'✕ Close manual entry':'⌨ Type an address';if(open)$('manual').focus()};
 $('paste').onclick=async()=>{if(!navigator.clipboard?.readText){notify('status','Clipboard button unavailable. Long-press the field and Paste, then tap Add.','warn');$('manual').focus();return}try{addAddress(await navigator.clipboard.readText())}catch(_){notify('status','Clipboard permission denied. Long-press the field and Paste, then tap Add.','warn');$('manual').focus()}};
 $('add').onclick=()=>addAddress($('manual').value);
 $('clear').onclick=()=>{if(addresses.length&&confirm('Clear all stops and completed markers?')){snapshot();addresses=[];done.clear();priorities.clear();save();invalidate();renderStops();notify('status','All addresses cleared.','ok')}};
 $('copy').onclick=async()=>{if(!addresses.length)return notify('status','Nothing to copy.','warn');const txt=addresses.join('\n');try{await navigator.clipboard.writeText(txt);notify('status','Addresses copied.','ok')}catch(_){$('manual').value=txt;$('manual').focus();$('manual').select();notify('status','Copy the selected addresses from the text field.','warn')}};
-document.querySelectorAll('input[name="startmode"]').forEach(el=>el.addEventListener('change',()=>{$('manualStartWrap').classList.toggle('hidden',document.querySelector('input[name="startmode"]:checked').value!=='manual');invalidate()}));
+document.querySelectorAll('input[name="startmode"]').forEach(el=>el.addEventListener('change',()=>{$('manualStartWrap').classList.toggle('hidden',document.querySelector('input[name="startmode"]:checked').value!=='manual');document.querySelector('#startSettings summary').textContent=document.querySelector('input[name="startmode"]:checked').value==='gps'?'📍 Starting location: phone GPS (tap to change)':'📍 Starting location: manual address (tap to change)';invalidate()}));
 const fmtSecs=s=>{const m=Math.round(s/60);return m>=60?`${Math.floor(m/60)} hr ${m%60} min`:`${m} min`};
 function gps(){return new Promise((resolve,reject)=>{if(!navigator.geolocation)return reject(Error('Your browser does not support GPS. Choose a manual starting address.'));navigator.geolocation.getCurrentPosition(p=>resolve({lat:p.coords.latitude,lon:p.coords.longitude}),e=>reject(Error('GPS location unavailable or permission refused. Choose a manual starting address.')), {enableHighAccuracy:true,timeout:15000,maximumAge:30000})})}
 let lastGeoRequest=0;
@@ -109,13 +275,6 @@ function applyLocalRouteChange(message){
  persistRoute();renderRoute(pendingRoute.order,pendingRoute.stops,pendingRoute.geos,pendingRoute.matrix);
  renderStops();notify('routeStatus',message,'ok');
 }
-function moveRouteStop(position,delta){
- if(!pendingRoute||busy)return;
- const dest=position+delta;if(dest<0||dest>=pendingRoute.order.length)return;
- snapshot();const order=[...pendingRoute.order];[order[position],order[dest]]=[order[dest],order[position]];
- pendingRoute={...pendingRoute,order,mode:'manual'};
- applyLocalRouteChange('Route order adjusted manually. Driving estimates and the map now reflect that order. Optimise again to restore the fastest priority-aware route.');
-}
 function togglePriority(address){
  if(busy||done.has(normKey(address)))return;
  snapshot();const key=normKey(address);if(priorities.has(key))priorities.delete(key);else priorities.add(key);
@@ -131,7 +290,7 @@ function togglePriority(address){
 function advanceRoute(completedIdx){
   const old=pendingRoute;if(!old)return;
   const remaining=old.order.filter(i=>i!==completedIdx);
-  if(!remaining.length){mapLoadId++;clearRouteMap();pendingRoute=null;try{localStorage.removeItem(ROUTEKEY)}catch(_){}$('result').classList.add('hidden');notify('routeStatus','Run complete. All stops marked delivered.','ok');return}
+  if(!remaining.length){mapLoadId++;clearRouteMap();pendingRoute=null;try{localStorage.removeItem(ROUTEKEY)}catch(_){}$('result').classList.add('hidden');$('routeProgress').classList.add('hidden');$('routeMetrics').classList.add('hidden');$('optimise').textContent='🧭 Optimise remaining stops';notify('routeStatus','Run complete. All stops marked delivered.','ok');return}
   // The last completed stop is the new assumed origin. Preserve the prior sequence without an API call.
   const nodeIds=[completedIdx,...remaining].map(i=>i+1);
   const matrix=nodeIds.map(r=>nodeIds.map(c=>old.matrix[r][c]));
@@ -211,48 +370,27 @@ function mapFocusStop(pos){
  requestAnimationFrame(()=>{leafletMap.invalidateSize();leafletMap.setView(marker.getLatLng(),Math.max(leafletMap.getZoom(),15),{animate:true});marker.openPopup()});
  $('routeMapArea').scrollIntoView({behavior:'smooth',block:'center'});
 }
-function setMapVisible(visible){mapVisible=visible;$('routeMapArea').classList.toggle('hidden',!visible);$('toggleMap').textContent=visible?'Hide map':'Show map';$('toggleMap').setAttribute('aria-expanded',String(visible));try{localStorage.setItem(MAPKEY,visible?'shown':'hidden')}catch(_){}if(visible&&leafletMap)requestAnimationFrame(()=>leafletMap.invalidateSize())}
+function setMapVisible(visible){mapVisible=visible;$('routeMapArea').classList.toggle('hidden',!visible);$('toggleMap').textContent=visible?'Hide map':'Show map';$('toggleMap').setAttribute('aria-expanded',String(visible));try{localStorage.setItem(MAPKEY,visible?'shown':'hidden')}catch(_){}if(visible&&leafletMap)requestAnimationFrame(()=>{leafletMap.invalidateSize();if(mapBounds)leafletMap.fitBounds(mapBounds.pad(.13),{maxZoom:15,animate:false})})}
 $('toggleMap').onclick=()=>setMapVisible(!mapVisible);
 $('nextMap').onclick=()=>mapFocusStop(0);
 $('fitMap').onclick=()=>{if(!mapVisible)setMapVisible(true);if(leafletMap&&mapBounds){leafletMap.invalidateSize();leafletMap.fitBounds(mapBounds.pad(.13),{maxZoom:15})}};
 setMapVisible(mapVisible);
 function renderRoute(order,stops,geo,matrix){
- const root=$('route');root.replaceChildren();
  const completedCount=addresses.filter(a=>done.has(normKey(a))).length;
  const progress=$('routeProgress');progress.replaceChildren();
  const heading=document.createElement('strong');heading.textContent=`${completedCount} completed · ${stops.length} remaining`;
- const guidance=document.createElement('small');guidance.textContent=`Next: ${stops[order[0]]}. Route is advisory; update HUB separately.`;
+ const guidance=document.createElement('small');guidance.textContent=`NEXT: ${stops[order[0]]} · Remember to update HUB separately.`;
  const bar=document.createElement('div');bar.className='bar';const fill=document.createElement('span');fill.style.width=`${Math.round(100*completedCount/Math.max(1,addresses.length))}%`;bar.append(fill);progress.append(heading,guidance,bar);
- let elapsed=0;
- order.forEach((idx,pos)=>{
-  const a=stops[idx],key=normKey(a),isPriority=priorities.has(key);
-  elapsed+=matrix[pos?order[pos-1]+1:0][idx+1];
-  const card=document.createElement('div');card.className='route-item'+(!pos?' next':'');
-  const head=document.createElement('div');head.className='between';
-  const left=document.createElement('strong');left.textContent=pos===0?`NEXT STOP · ${a}`:`Stop ${pos+1} · ${a}`;
-  const time=document.createElement('span');time.className='small';time.textContent=`~${fmtSecs(elapsed)} from start`;
-  head.append(left,time);card.append(head);
-  if(isPriority){const flag=document.createElement('p');flag.className='priority-label';flag.textContent='★ Priority delivery';card.append(flag)}
-  const match=document.createElement('div');match.className='verified';match.textContent='Map match: '+geo[idx].label;card.append(match);
-  const controls=document.createElement('div');controls.className='route-order-controls';
-  const up=document.createElement('button');up.className='secondary';up.textContent='↑ Earlier';up.disabled=pos===0;up.setAttribute('aria-label','Move earlier: '+a);up.onclick=()=>moveRouteStop(pos,-1);
-  const down=document.createElement('button');down.className='secondary';down.textContent='↓ Later';down.disabled=pos===order.length-1;down.setAttribute('aria-label','Move later: '+a);down.onclick=()=>moveRouteStop(pos,1);
-  const pr=document.createElement('button');pr.className='priority-btn'+(isPriority?' active':'');pr.textContent=isPriority?'★ Priority':'☆ Priority';pr.setAttribute('aria-label',(isPriority?'Remove priority from ':'Prioritise ')+a);pr.onclick=()=>togglePriority(a);
-  controls.append(up,down,pr);card.append(controls);
-  const actions=document.createElement('div');actions.className='route-actions';
-  const focus=document.createElement('button');focus.className='secondary';focus.textContent='◎ Show on map';focus.setAttribute('aria-label',`Show stop ${pos+1} on map: ${a}`);focus.onclick=()=>mapFocusStop(pos);
-  const nav=document.createElement('a');nav.className='secondary';nav.href=mapsLink(a);nav.target='_blank';nav.rel='noopener';nav.textContent='↗ Navigate';
-  const completed=document.createElement('button');completed.className='quiet';completed.textContent='✓ Mark completed';completed.onclick=()=>{if(pos!==0&&!confirm('Complete this stop out of the suggested order? The remaining route will be kept in its current sequence.'))return;snapshot();done.add(key);save();renderStops();advanceRoute(idx)};
-  actions.append(focus,nav,completed);card.append(actions);root.append(card);
- });
+ progress.classList.remove('hidden');
  const mode=pendingRoute?.mode||'optimised';
- $('duration').textContent=`~${fmtSecs(routeTotal(matrix,order))} driving${mode==='manual'?' · manual order':mode==='priority-adjusted'?' · priority adjusted':stops.length>12?' · heuristic':''}`;
  const metrics=$('routeMetrics');metrics.replaceChildren();
  [['Total driving',`~${fmtSecs(routeTotal(matrix,order))}`],['Next stop drive',`~${fmtSecs(matrix[0][order[0]+1])}`]].forEach(([label,value])=>{
   const tile=document.createElement('div');tile.className='metric';const strong=document.createElement('strong');strong.textContent=value;const desc=document.createElement('span');desc.textContent=label;tile.append(strong,desc);metrics.append(tile)});
+ metrics.classList.remove('hidden');
  const original=routeTotal(matrix,stops.map((_,i)=>i)),better=original-routeTotal(matrix,order);
- $('comparison').textContent=mode==='manual'?'Manual sequence: time estimate reflects your chosen order, which may not be the fastest.':mode==='priority-adjusted'?'Priorities moved ahead. Press Optimise to minimise time while keeping priority deliveries first.':priorities.size?'Priority-aware route: priority deliveries precede normal stops. Driving time may be longer than the unconstrained fastest route.':better>30?`Approx. ${fmtSecs(better)} quicker than the pasted order. Driving time only; excludes stops, traffic and loading.`:'Driving times are estimated. Check all matched addresses before following the route.';
- $('result').classList.remove('hidden');updateRouteMap(pendingRoute);
+ $('comparison').textContent=mode==='manual'?'Manual order: times reflect your chosen sequence, which may not be the fastest.':mode==='priority-adjusted'?'Priority stops are first. Optimise again to minimise driving time in that priority grouping.':priorities.size?'Priority-aware route: urgent stops first. The result may take longer than the unrestricted fastest route.':better>30?`Approx. ${fmtSecs(better)} quicker than pasted order. Times exclude traffic and unloading.`:'Driving-time estimates exclude live traffic and unloading.';
+ $('result').classList.remove('hidden');$('optimise').textContent='↻ Reoptimise remaining stops';
+ renderStops();updateRouteMap(pendingRoute);
 }
 function renderReview(stops,geos){const box=$('reviewItems');box.replaceChildren();const flags=[];
   stops.forEach((address,i)=>{const item=document.createElement('div');item.className='review-item';
@@ -263,13 +401,13 @@ function renderReview(stops,geos){const box=$('reviewItems');box.replaceChildren
     item.append(original,match,link,label);box.append(item)});
   $('confirm').disabled=true;$('review').classList.remove('hidden');$('review').scrollIntoView({behavior:'smooth',block:'start'});
 }
-$('confirm').onclick=()=>{if(!pendingRoute)return;const {order,stops,geos,matrix}=pendingRoute;renderRoute(order,stops,geos,matrix);persistRoute();$('review').classList.add('hidden');notify('routeStatus','Map locations confirmed. This is an estimated driving-time order; follow navigation and despatch instructions.','ok');$('result').scrollIntoView({behavior:'smooth',block:'start'})};
-async function optimise(){if(busy)return;const stops=addresses.filter(a=>!done.has(normKey(a)));if(!stops.length)return notify('routeStatus','Please add at least one outstanding address.','warn');if(stops.length>15)return notify('routeStatus','Prototype limit is 15 outstanding stops. Complete or remove some stops first.','warn');busy=true;$('optimise').disabled=true;$('recalc').disabled=true;$('result').classList.add('hidden');$('review').classList.add('hidden');pendingRoute=null;try{
+$('confirm').onclick=()=>{if(!pendingRoute)return;const {order,stops,geos,matrix}=pendingRoute;renderRoute(order,stops,geos,matrix);persistRoute();$('review').classList.add('hidden');notify('routeStatus','Map locations confirmed. This is an estimated driving-time order; follow navigation and despatch instructions.','ok');$('runPanel').scrollIntoView({behavior:'smooth',block:'start'})};
+async function optimise(){if(busy)return;const stops=addresses.filter(a=>!done.has(normKey(a)));if(!stops.length)return notify('routeStatus','Please add at least one outstanding address.','warn');if(stops.length>15)return notify('routeStatus','Prototype limit is 15 outstanding stops. Complete or remove some stops first.','warn');busy=true;$('optimise').disabled=true;$('result').classList.add('hidden');$('routeProgress').classList.add('hidden');$('routeMetrics').classList.add('hidden');$('review').classList.add('hidden');pendingRoute=null;renderStops();try{
 notify('routeStatus','Getting your starting location…');const mode=document.querySelector('input[name="startmode"]:checked').value;const start=mode==='gps'?await gps():await (async()=>{const value=normal($('manualStart').value);if(!value)throw Error('Enter a starting street address, or choose GPS.');notify('routeStatus','Looking up starting address…');return geocode(value)})();
 const geos=[];for(let i=0;i<stops.length;i++){notify('routeStatus',`Finding street address ${i+1} of ${stops.length}: ${stops[i]}`);geos.push(await geocode(stops[i]))}
 notify('routeStatus','Checking road travel times and calculating the shortest-time stop order…');const points=[start,...geos];const coords=points.map(p=>`${p.lon},${p.lat}`).join(';');const url=`https://router.project-osrm.org/table/v1/driving/${coords}?annotations=duration`;const res=await fetch(url);if(!res.ok)throw Error(`Routing service unavailable (HTTP ${res.status}). Try again later.`);const data=await res.json();if(data.code!=='Ok'||!Array.isArray(data.durations))throw Error('Could not calculate the driving-time matrix. Check locations and try again.');const matrix=data.durations.map(row=>row.map(v=>v==null?Infinity:v));if(matrix.length!==points.length||matrix.some(row=>!Array.isArray(row)||row.length!==points.length))throw Error('Unexpected routing response.');const order=optimalPath(matrix,stops.map((a,i)=>priorities.has(normKey(a))?i:-1).filter(i=>i>=0));if(!Number.isFinite(routeTotal(matrix,order)))throw Error('No drivable route found between all stops.');routeOrder=order;pendingRoute={order,stops,geos,matrix,start,mode:"optimised"};renderReview(stops,geos);notify('routeStatus',`Calculated an estimated ${stops.length}-stop route. Confirm every map match before viewing the sequence.`,'warn')
-}catch(e){notify('routeStatus',e.message||'Routing failed. Check internet access and retry.','err')}finally{busy=false;$('optimise').disabled=false;$('recalc').disabled=false;renderStops()}}
-$('optimise').onclick=optimise;$('recalc').onclick=optimise;renderStops();
+}catch(e){notify('routeStatus',e.message||'Routing failed. Check internet access and retry.','err')}finally{busy=false;$('optimise').disabled=false;renderStops()}}
+$('optimise').onclick=optimise;renderStops();
 try{const restored=JSON.parse(localStorage.getItem(ROUTEKEY)||'null');if(restored&&Array.isArray(restored.stops)&&Array.isArray(restored.geos)&&Array.isArray(restored.order)&&Array.isArray(restored.matrix)&&restored.stops.length>0&&restored.stops.every(a=>addresses.some(v=>normKey(v)===normKey(a))&&!done.has(normKey(a)))&&restored.matrix.length===restored.stops.length+1&&restored.matrix.every(row=>Array.isArray(row)&&row.length===restored.matrix.length)&&restored.order.length===restored.stops.length&&new Set(restored.order).size===restored.stops.length&&restored.order.every(i=>Number.isInteger(i)&&i>=0&&i<restored.stops.length)){
  pendingRoute=restored;renderRoute(restored.order,restored.stops,restored.geos,restored.matrix);notify('routeStatus','Verified route restored from this phone. Recalculate from GPS if you have moved or new jobs arrive.','ok')
 }}catch(_){try{localStorage.removeItem(ROUTEKEY)}catch(__){}}
