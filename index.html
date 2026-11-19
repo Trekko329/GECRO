@@ -99,7 +99,7 @@ main{max-width:660px;padding-top:15px}
 </style>
 </head>
 <body><main>
-<header class="top"><div><h1>GECRO <span style="color:#4dcbea">Driver</span></h1><p class="sub">One-screen delivery run · v0.13</p></div><span class="pill">🚚 Open route</span></header>
+<header class="top"><div><h1>GECRO <span style="color:#4dcbea">Driver</span></h1><p class="sub">One-screen delivery run · v0.14A</p></div><span class="pill">🚚 Open route</span></header>
 <details class="notice compact"><summary><strong>Prototype testing only · public addresses</strong></summary>Public OpenStreetMap lookup and OSRM demo routing services are not suitable for commercial fleet deployment. Use dummy or publicly listed addresses only. Check all map matches. Estimates exclude live traffic and unloading.</details>
 <section class="panel run-panel" id="runPanel">
   <div class="between run-heading"><h2>My delivery run</h2><span class="count" id="count">0 stops</span></div>
@@ -126,7 +126,7 @@ main{max-width:660px;padding-top:15px}
   <button class="secondary full row-gap" id="undo" disabled>↶ Undo last change</button>
 </section>
 <section class="panel setup-panel"><details id="startSettings"><summary>📍 Starting location: phone GPS (tap to change)</summary><label class="radio-row"><input type="radio" name="startmode" value="gps" checked>📍 My phone's GPS location</label><label class="radio-row"><input type="radio" name="startmode" value="manual">⌨️ Enter starting address instead</label><div id="manualStartWrap" class="hidden"><label class="small" for="manualStart">Starting street address</label><input class="input" id="manualStart" placeholder="e.g. 30 Gheringhap St, Geelong VIC"></div><p class="small">GPS is requested only when you optimise. Coordinates are not saved.</p></details></section>
-<p class="footer">Addresses and completed-state selections are saved only on this browser/device. Street address matching is supplied by © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> through Nominatim, subject to its <a href="https://operations.osmfoundation.org/policies/nominatim/" target="_blank" rel="noopener">usage policy</a>. Routing estimates use a public OSRM demonstration server. Both services receive queries during optimisation. They can be unavailable or return incorrect matches. Check each matched location and follow road signs, road rules and despatch instructions. Do not use the phone while driving.</p>
+<p class="footer">Addresses and completed-state selections are saved only on this browser/device. Address lookup and routing are powered by <a href="https://www.geoapify.com/" target="_blank" rel="noopener">Geoapify</a> using OpenStreetMap data (© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>). The provider receives necessary addresses and coordinates. This is a staging test build, not yet approved for real customer address data. Check matched locations. Check each matched location and follow road signs, road rules and despatch instructions. Do not use the phone while driving.</p>
 </main>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>
@@ -289,14 +289,22 @@ let lastStartMode='gps';
 document.querySelectorAll('input[name="startmode"]').forEach(el=>el.addEventListener('change',()=>{if(busy){notify('routeStatus','Wait until the calculation finishes before changing the starting mode.','warn');document.querySelector(`input[name="startmode"][value="${lastStartMode}"]`).checked=true;return}lastStartMode=el.value;$('manualStartWrap').classList.toggle('hidden',document.querySelector('input[name="startmode"]:checked').value!=='manual');document.querySelector('#startSettings summary').textContent=document.querySelector('input[name="startmode"]:checked').value==='gps'?'📍 Starting location: phone GPS (tap to change)':'📍 Starting location: manual address (tap to change)';invalidate()}));
 const fmtSecs=s=>{const m=Math.round(s/60);return m>=60?`${Math.floor(m/60)} hr ${m%60} min`:`${m} min`};
 function gps(){return new Promise((resolve,reject)=>{if(!navigator.geolocation)return reject(Error('Your browser does not support GPS. Choose a manual starting address.'));navigator.geolocation.getCurrentPosition(p=>resolve({lat:p.coords.latitude,lon:p.coords.longitude}),e=>reject(Error('GPS location unavailable or permission refused. Choose a manual starting address.')), {enableHighAccuracy:true,timeout:15000,maximumAge:30000})})}
-let lastGeoRequest=0;
-async function geocode(address){const key=normKey(address);if(geoCache[key]&&Date.now()-geoCache[key].saved<90*86400000)return geoCache[key];
-const q=/\b(australia|vic|victoria|nsw|qld|sa|tas|wa|nt|act)\b/i.test(address)?address:address+', Victoria, Australia';
-const wait=Math.max(0,1200-(Date.now()-lastGeoRequest));if(wait)await sleep(wait);lastGeoRequest=Date.now();
-const url='https://nominatim.openstreetmap.org/search?'+new URLSearchParams({q,format:'jsonv2',limit:'1',countrycodes:'au',addressdetails:'1'});
-const res=await fetch(url,{headers:{Accept:'application/json'}});if(!res.ok)throw Error(`Address lookup failed (HTTP ${res.status}). Try again later.`);
-const arr=await res.json();if(!arr.length)throw Error(`No street location found for: ${address}. Edit the address and try again.`);
-const data={lat:Number(arr[0].lat),lon:Number(arr[0].lon),label:arr[0].display_name,saved:Date.now()};if(!Number.isFinite(data.lat)||!Number.isFinite(data.lon))throw Error('Address lookup gave invalid coordinates.');geoCache[key]=data;save();return data;
+async function apiPost(path,payload){
+ const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),18000);
+ try{const response=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal:controller.signal});
+ const data=await response.json().catch(()=>({}));
+ if(!response.ok)throw Error(data.error||`GECRO API error (HTTP ${response.status})`);
+ return data;
+ }catch(e){if(e.name==='AbortError')throw Error('Routing request timed out. Your previous confirmed route is still saved.');throw e}
+ finally{clearTimeout(timeout)}
+}
+async function geocode(address){
+ const key=normKey(address);
+ if(geoCache[key]&&Date.now()-geoCache[key].saved<90*86400000)return geoCache[key];
+ const results=await apiPost('/api/addresses/resolve',{address});
+ const first=results.candidates?.[0];if(!first||!validPoint(first))throw Error(`No address match found for ${address}. Edit the address and retry.`);
+ const point={lat:first.lat,lon:first.lon,label:first.label,saved:Date.now()};
+ geoCache[key]=point;save();return point;
 }
 function optimalPath(matrix, priorityIndices=[]){const n=matrix.length-1;if(!n)return[];
 const prioritySet=new Set(priorityIndices),priorityMask=priorityIndices.reduce((mask,i)=>mask|(1<<i),0);
@@ -382,15 +390,11 @@ async function updateRouteMap(route){
   drawRoadGeometry(window.__gecroLastRoadGeometry,current);return;
  }
  try{
-  const coords=locations.map(p=>`${p[1]},${p[0]}`).join(';');
-  const url=`https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson&steps=false`;
-  const response=await fetch(url);
-  if(!response.ok)throw Error(`HTTP ${response.status}`);
-  const data=await response.json();
-  if(data.code!=='Ok'||!Array.isArray(data.routes)||!data.routes[0]?.geometry?.coordinates?.length)throw Error('No road geometry returned');
+  const data=await apiPost('/api/routes/geometry',{points:locations.map(p=>({lat:p[0],lon:p[1]}))});
+  if(!data.geometry?.coordinates?.length)throw Error('No road geometry returned');
   if(current!==mapLoadId)return;
-  mapSignature=signature;window.__gecroLastRoadGeometry=data.routes[0].geometry;
-  drawRoadGeometry(data.routes[0].geometry,current);
+  mapSignature=signature;window.__gecroLastRoadGeometry=data.geometry;
+  drawRoadGeometry(data.geometry,current);
  }catch(e){if(current!==mapLoadId)return;mapNotice('Numbered pins are available, but the road-route line could not load. Your stop order and navigation still work.');}
 }
 function drawRoadGeometry(geometry,requestId){
@@ -464,7 +468,7 @@ const geos=[];for(let i=0;i<stops.length;i++){
  notify('routeStatus',`Finding new street address ${i+1} of ${stops.length}: ${stops[i]}`);
  geos.push(await geocode(stops[i]));
 }
-notify('routeStatus','Checking road travel times and calculating the shortest-time stop order…');const points=[start,...geos];const coords=points.map(p=>`${p.lon},${p.lat}`).join(';');const url=`https://router.project-osrm.org/table/v1/driving/${coords}?annotations=duration`;const res=await fetch(url);if(!res.ok)throw Error(`Routing service unavailable (HTTP ${res.status}). Try again later.`);const data=await res.json();if(data.code!=='Ok'||!Array.isArray(data.durations))throw Error('Could not calculate the driving-time matrix. Check locations and try again.');const matrix=data.durations.map(row=>row.map(v=>v==null?Infinity:v));if(matrix.length!==points.length||matrix.some(row=>!Array.isArray(row)||row.length!==points.length))throw Error('Unexpected routing response.');const order=optimalPath(matrix,stops.map((a,i)=>priorities.has(normKey(a))?i:-1).filter(i=>i>=0));if(!Number.isFinite(routeTotal(matrix,order)))throw Error('No drivable route found between all stops.');routeOrder=order;candidateRoute={order,stops,geos,matrix,start,mode:'optimised'};const newCount=stops.filter(a=>!approvedPoint(a)).length;renderReview(stops,geos);if(newCount)notify('routeStatus',`Route calculated. Check only ${newCount} new or changed address${newCount===1?'':'es'} before updating your route. Existing verified stops remain approved.`,'warn')
+notify('routeStatus','Checking road travel times and calculating the shortest-time stop order…');const points=[start,...geos];const data=await apiPost('/api/routes/matrix',{points});if(!Array.isArray(data.durations))throw Error('Could not calculate the driving-time matrix.');const matrix=data.durations.map(row=>row.map(v=>v==null?Infinity:v));if(matrix.length!==points.length||matrix.some(row=>!Array.isArray(row)||row.length!==points.length))throw Error('Unexpected routing response.');const order=optimalPath(matrix,stops.map((a,i)=>priorities.has(normKey(a))?i:-1).filter(i=>i>=0));if(!Number.isFinite(routeTotal(matrix,order)))throw Error('No drivable route found between all stops.');routeOrder=order;candidateRoute={order,stops,geos,matrix,start,mode:'optimised'};const newCount=stops.filter(a=>!approvedPoint(a)).length;renderReview(stops,geos);if(newCount)notify('routeStatus',`Route calculated. Check only ${newCount} new or changed address${newCount===1?'':'es'} before updating your route. Existing verified stops remain approved.`,'warn')
 }catch(e){candidateRoute=null;notify('routeStatus',(e.message||'Routing failed. Check internet access and retry.')+(pendingRoute?' Previous confirmed route is still available.':''),'err')}finally{busy=false;$('optimise').disabled=false;renderStops()}}
 $('optimise').onclick=optimise;renderStops();
 try{const restored=JSON.parse(localStorage.getItem(ROUTEKEY)||'null');if(restored&&Array.isArray(restored.stops)&&Array.isArray(restored.geos)&&Array.isArray(restored.order)&&Array.isArray(restored.matrix)&&restored.stops.length>0&&restored.stops.every(a=>addresses.some(v=>normKey(v)===normKey(a))&&!done.has(normKey(a)))&&restored.matrix.length===restored.stops.length+1&&restored.matrix.every(row=>Array.isArray(row)&&row.length===restored.matrix.length)&&restored.order.length===restored.stops.length&&new Set(restored.order).size===restored.stops.length&&restored.order.every(i=>Number.isInteger(i)&&i>=0&&i<restored.stops.length)){
