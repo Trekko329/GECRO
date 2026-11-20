@@ -18,7 +18,7 @@ package.json                  Test and deployment commands
 tests/                        Mocked API and Worker routing tests
 ```
 
-**Do not upload `functions/` or `_routes.json` from the Pages version.** Workers does not use Pages Functions file-system routing here.
+**Do not upload `functions/` or `_routes.json` from the Pages version.** Workers does not use Pages Functions file-system routing here. hELO. 
 
 ## Important: protect existing GECRO
 
