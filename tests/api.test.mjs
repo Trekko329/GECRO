@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import * as matrix from '../functions/api/routes/matrix.js';
-import * as resolve from '../functions/api/addresses/resolve.js';
-import * as suggest from '../functions/api/addresses/suggest.js';
-import * as geometry from '../functions/api/routes/geometry.js';
-import * as health from '../functions/api/health.js';
+import * as matrix from '../src/api/routes/matrix.js';
+import * as resolve from '../src/api/addresses/resolve.js';
+import * as suggest from '../src/api/addresses/suggest.js';
+import * as geometry from '../src/api/routes/geometry.js';
+import * as health from '../src/api/health.js';
 const env={GEOAPIFY_API_KEY:'TEST_KEY_ONLY'};
 function req(path,body){return new Request('https://staging.example.com'+path,{method:'POST',headers:{'Content-Type':'application/json',Origin:'https://staging.example.com'},body:JSON.stringify(body)});}
 const originalFetch=globalThis.fetch;const calls=[];
