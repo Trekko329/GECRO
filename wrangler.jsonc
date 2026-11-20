@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "gecro-driver-staging"
+  "name": "gecro-driver-staging1"
   "main": "src/worker.js",
   "compatibility_date": "2026-11-19",
   "workers_dev": true,
