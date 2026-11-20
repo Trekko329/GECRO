@@ -33,7 +33,7 @@ The `wrangler.jsonc` **name** is `gecro-v014a-test`, deliberately distinct from 
 7. Confirm the test Worker's actual `workers.dev` URL in its Cloudflare dashboard. Visit `/api/health`. The response should include `"status":"configured"` and `"version":"0.14A"`.
 8. Open the root test URL on your phone. Try *public business* test addresses, check GPS, route optimisation, map geometry, saved stops and recovery. Avoid private customer addresses until approved by your workplace.
 
-If Cloudflare's Git onboarding UI does not offer the required branch selection, do **not** redirect the existing Worker. Instead deploy from a local clone with `npm install && npx wrangler deploy` using the credentials from your own Cloudflare account, then connect Git automation later. The Wrangler file controls the test Worker name.
+If Cloudflare's Git onboarding UI does not offer the required branch selection, do **not** redirect the existing Worker. Instead deploy from a local clone with `npm install && npx wrangler deploy` using the credentials from your own Cloudflare account, then connect Git automation later. The Wrangler file controls the test Worker name. Wassup. 
 
 ## Local validation
 
